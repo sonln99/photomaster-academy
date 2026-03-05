@@ -563,5 +563,270 @@ export const beginnerLessons: Lesson[] = [
         tips: ["Bắt đầu với 50mm - góc nhìn tự nhiên nhất", "Bước bạn di chuyển sẽ giúp ý thức hơn về bố cục", "Đây là cách Henri Cartier-Bresson luyện tập"]
       }
     ]
+  },
+  {
+    id: "focusing-techniques",
+    title: "Kỹ Thuật Lấy Nét",
+    description: "AF-S, AF-C, manual focus, back-button focus - làm chủ điểm nét",
+    content: `
+<h2>Hệ Thống Lấy Nét (Autofocus)</h2>
+<p>Lấy nét chính xác là kỹ năng cơ bản nhất. Một bức ảnh mờ không thể cứu được trong hậu kỳ.</p>
+
+<h2>1. Các Chế Độ AF</h2>
+<h3>AF-S / One Shot</h3>
+<ul>
+<li>Focus 1 lần khi nhấn nửa nút chụp</li>
+<li>Không thay đổi khi chủ thể di chuyển</li>
+<li>Dùng cho: chủ thể đứng yên (chân dung, phong cảnh, sản phẩm)</li>
+</ul>
+
+<h3>AF-C / AI Servo</h3>
+<ul>
+<li>Liên tục theo dõi và cập nhật focus khi chủ thể di chuyển</li>
+<li>Dùng cho: thể thao, động vật, trẻ em chạy nhảy</li>
+<li>Kết hợp với burst mode để tăng tỷ lệ ảnh nét</li>
+</ul>
+
+<h3>AF-A / AI Focus</h3>
+<ul>
+<li>Máy tự động chuyển giữa AF-S và AF-C</li>
+<li>Tiện lợi nhưng không chính xác bằng việc tự chọn</li>
+</ul>
+
+<h2>2. Vùng AF (AF Area)</h2>
+<ul>
+<li><strong>Single Point:</strong> Chính xác nhất - bạn chọn 1 điểm focus</li>
+<li><strong>Zone/Group:</strong> Nhóm điểm, tốt cho chủ thể chuyển động</li>
+<li><strong>Wide/Auto:</strong> Máy tự chọn - nhanh nhưng có thể focus sai chỗ</li>
+<li><strong>Eye AF:</strong> Tự động nhận diện và focus vào mắt - tuyệt vời cho chân dung</li>
+</ul>
+
+<h2>3. Back-Button Focus</h2>
+<p>Tách chức năng focus ra khỏi nút chụp, gán vào nút AF-ON ở phía sau máy:</p>
+<ul>
+<li>Nhấn AF-ON để focus, thả ra để khoá focus</li>
+<li>Nút chụp chỉ để chụp, không liên quan đến focus</li>
+<li>Kết hợp AF-S và AF-C trong 1: giữ AF-ON = AF-C, nhấn rồi thả = AF-S</li>
+</ul>
+
+<h2>4. Manual Focus</h2>
+<p>Tự tay xoay vòng focus trên ống kính:</p>
+<ul>
+<li>Dùng khi AF thất bại (thiếu sáng, ít tương phản)</li>
+<li>Chụp macro cần chính xác từng mm</li>
+<li>Chụp phong cảnh với hyperfocal distance</li>
+<li>Sử dụng Focus Peaking (viền sáng báo nét) trên mirrorless</li>
+</ul>
+
+<div class="tip-box">
+<strong>Mẹo:</strong> Luôn focus vào MẮT khi chụp chân dung. Mắt là điểm đầu tiên người xem nhìn vào. Mắt mờ = ảnh hỏng.
+</div>
+    `,
+    quiz: [
+      {
+        question: "Khi nào nên dùng AF-C / AI Servo?",
+        options: ["Chụp phong cảnh", "Chụp sản phẩm", "Chụp chủ thể đang di chuyển", "Chụp macro"],
+        correctIndex: 2,
+        explanation: "AF-C liên tục theo dõi và cập nhật focus, lý tưởng cho chủ thể chuyển động như thể thao, động vật, trẻ em."
+      },
+      {
+        question: "Back-button focus có lợi gì?",
+        options: ["Chụp nhanh hơn", "Tách focus khỏi nút chụp, linh hoạt hơn", "Ảnh sáng hơn", "Xoá phông đẹp hơn"],
+        correctIndex: 1,
+        explanation: "Back-button focus tách AF khỏi nút chụp, cho phép bạn kết hợp AF-S và AF-C linh hoạt trong 1 thiết lập."
+      },
+      {
+        question: "Eye AF dùng để làm gì?",
+        options: ["Đo sáng mắt", "Tự động focus vào mắt chủ thể", "Tạo hiệu ứng mắt đỏ", "Xoá vùng mắt thâm"],
+        correctIndex: 1,
+        explanation: "Eye AF tự động nhận diện và focus vào mắt - rất hữu ích khi chụp chân dung vì mắt luôn là điểm quan trọng nhất."
+      },
+      {
+        question: "Khi nào nên dùng Manual Focus?",
+        options: ["Luôn luôn", "Khi AF thất bại, chụp macro, hoặc cần độ chính xác", "Chỉ khi chụp phong cảnh", "Chỉ với ống kính cũ"],
+        correctIndex: 1,
+        explanation: "Manual focus hữu ích khi AF không hoạt động tốt (thiếu sáng), chụp macro cần chính xác, hoặc dùng hyperfocal distance."
+      }
+    ],
+    exercises: [
+      {
+        title: "Thực hành Back-Button Focus",
+        description: "Thiết lập back-button focus trên máy ảnh. Chụp 20 tấm chân dung và 20 tấm chủ thể chuyển động. So sánh tỷ lệ ảnh nét với setup cũ.",
+        tips: ["Đọc hướng dẫn máy ảnh để gán nút AF-ON", "Bắt đầu với chủ thể đứng yên để quen thao tác", "Sau đó thử với người đi bộ, chạy"]
+      }
+    ]
+  },
+  {
+    id: "smartphone-photography",
+    title: "Chụp Ảnh Bằng Điện Thoại",
+    description: "Tối ưu hoá camera điện thoại - kỹ thuật, app, và mẹo chuyên gia",
+    content: `
+<h2>Điện Thoại Là Máy Ảnh Tốt Nhất</h2>
+<p>"Máy ảnh tốt nhất là máy ảnh bạn có trong tay." Smartphone hiện đại có camera rất mạnh, vấn đề là bạn có biết sử dụng không.</p>
+
+<h2>1. Hiểu Camera Điện Thoại</h2>
+<ul>
+<li><strong>Main lens:</strong> Ống kính chính, chất lượng tốt nhất - sử dụng nhiều nhất</li>
+<li><strong>Ultra-wide:</strong> Góc rộng cho phong cảnh, kiến trúc</li>
+<li><strong>Telephoto:</strong> Zoom quang học (2x, 3x, 5x) - tốt hơn zoom số</li>
+<li><strong>Macro:</strong> Chụp cận cảnh chi tiết nhỏ</li>
+</ul>
+
+<h2>2. Thiết Lập Quan Trọng</h2>
+<ul>
+<li><strong>Bật lưới (Grid):</strong> Settings > Camera > Grid ON - áp dụng quy tắc 1/3</li>
+<li><strong>HDR:</strong> Bật Auto HDR để giữ chi tiết vùng sáng và tối</li>
+<li><strong>Chụp RAW:</strong> iPhone: dùng ProRAW. Android: dùng Pro mode chụp RAW</li>
+<li><strong>Khoá focus/sáng:</strong> Chạm giữ màn hình để khoá điểm focus và độ sáng</li>
+</ul>
+
+<h2>3. Kỹ Thuật Chụp</h2>
+<ul>
+<li><strong>Cầm máy ổn định:</strong> Dùng 2 tay, khuỷu tay sát người, hít thở trước khi chụp</li>
+<li><strong>Dùng volume button:</strong> Bấm nút âm lượng để chụp - ổn định hơn chạm màn hình</li>
+<li><strong>Lau ống kính:</strong> Ống kính điện thoại rất dễ bám dấu vân tay - lau trước mỗi lần chụp</li>
+<li><strong>Tránh zoom số:</strong> Zoom số làm giảm chất lượng. Thay vào đó hãy bước lại gần hơn</li>
+</ul>
+
+<h2>4. Portrait Mode</h2>
+<ul>
+<li>Sử dụng AI để tạo hiệu ứng xoá phông (bokeh)</li>
+<li>Cần khoảng cách 1-2.5m với chủ thể</li>
+<li>Hoạt động tốt nhất với 1 chủ thể rõ ràng</li>
+<li>Có thể chỉnh độ xoá phông sau khi chụp</li>
+</ul>
+
+<h2>5. Night Mode</h2>
+<ul>
+<li>Tự động kích hoạt khi thiếu sáng</li>
+<li>Giữ máy thật ổn định trong 2-5 giây</li>
+<li>Dùng chống hoặc đặt lên bề mặt cứng</li>
+<li>Kết quả tốt nhất khi có 1 ít ánh sáng (không tối hoàn toàn)</li>
+</ul>
+
+<h2>6. App Chỉnh Sửa Miễn Phí</h2>
+<ul>
+<li><strong>Snapseed:</strong> Miễn phí, mạnh mẽ, của Google</li>
+<li><strong>Lightroom Mobile:</strong> Miễn phí cơ bản, chức năng chuyên nghiệp</li>
+<li><strong>VSCO:</strong> Filter đẹp, giao diện đơn giản</li>
+</ul>
+
+<div class="tip-box">
+<strong>Mẹo Pro:</strong> Dùng chế độ Pro/Manual trên điện thoại để kiểm soát ISO, tốc độ, WB. Chụp RAW để có nhiều dữ liệu chỉnh sửa hơn.
+</div>
+    `,
+    quiz: [
+      {
+        question: "Tại sao nên tránh zoom số (digital zoom)?",
+        options: ["Vì nó tốn pin", "Vì nó làm giảm chất lượng ảnh", "Vì nó làm chậm máy", "Vì nó không hoạt động"],
+        correctIndex: 1,
+        explanation: "Zoom số chỉ crop và phóng to ảnh, làm giảm độ phân giải và chất lượng. Hãy bước lại gần chủ thể thay vì zoom số."
+      },
+      {
+        question: "Làm sao để khoá focus và độ sáng trên điện thoại?",
+        options: ["Bấm nhanh màn hình", "Chạm và giữ (long press) trên màn hình", "Lật điện thoại", "Không thể làm được"],
+        correctIndex: 1,
+        explanation: "Chạm và giữ trên màn hình sẽ khoá điểm focus và độ sáng (AE/AF Lock), giúp bạn kiểm soát tốt hơn."
+      },
+      {
+        question: "Khi chụp Night Mode, điều quan trọng nhất là gì?",
+        options: ["Bật flash", "Giữ máy thật ổn định", "Tăng độ sáng màn hình", "Tắt tất cả đèn"],
+        correctIndex: 1,
+        explanation: "Night Mode phơi nhiều khung hình - giữ máy ổn định là yếu tố quan trọng nhất để ảnh không bị mờ."
+      }
+    ],
+    exercises: [
+      {
+        title: "30 Ngày Chụp Điện Thoại",
+        description: "Mỗi ngày chụp ít nhất 5 bức ảnh bằng điện thoại với 1 chủ đề: ngày 1 - ánh sáng, ngày 2 - bố cục, ngày 3 - màu sắc...",
+        tips: ["Lau ống kính trước khi chụp", "Thử tất cả các ống kính (main, wide, tele)", "Chỉnh sửa bằng Snapseed trước khi chia sẻ"]
+      }
+    ]
+  },
+  {
+    id: "photo-editing-mobile",
+    title: "Chỉnh Ảnh Trên Điện Thoại",
+    description: "Snapseed, Lightroom Mobile - biến ảnh thường thành tác phẩm ngay trên điện thoại",
+    content: `
+<h2>Tại Sao Chỉnh Ảnh Quan Trọng?</h2>
+<p>Chụp ảnh chỉ là 50% quy trình. 50% còn lại là hậu kỳ. Ngay cả nhiếp ảnh gia chuyên nghiệp cũng phải chỉnh sửa mỗi bức ảnh.</p>
+
+<h2>1. Snapseed - Workflow Cơ Bản</h2>
+<h3>Bước 1: Tune Image</h3>
+<ul>
+<li>Brightness: chỉnh độ sáng tổng thể</li>
+<li>Contrast: tăng tương phản</li>
+<li>Saturation: tăng/giảm bão hoà màu</li>
+<li>Ambiance: cân bằng sáng tối cục bộ</li>
+<li>Highlights/Shadows: lấy chi tiết vùng sáng/tối</li>
+</ul>
+
+<h3>Bước 2: White Balance</h3>
+<ul>
+<li>Temperature: ấm/lạnh</li>
+<li>Tint: xanh lá/tím</li>
+</ul>
+
+<h3>Bước 3: Details</h3>
+<ul>
+<li>Structure: tăng chi tiết (dùng cho phong cảnh, kiến trúc)</li>
+<li>Sharpening: tăng độ sắc nét</li>
+</ul>
+
+<h3>Bước 4: Selective Adjust</h3>
+<ul>
+<li>Chạm vào 1 vùng cụ thể để chỉnh riêng vùng đó</li>
+<li>Brightness, contrast, saturation cục bộ</li>
+</ul>
+
+<h2>2. Lightroom Mobile</h2>
+<h3>Các công cụ quan trọng:</h3>
+<ul>
+<li><strong>Light:</strong> Exposure, Contrast, Highlights, Shadows, Whites, Blacks</li>
+<li><strong>Color:</strong> WB, Vibrance, Saturation, Color Mix (chỉnh từng màu)</li>
+<li><strong>Effects:</strong> Clarity, Dehaze, Vignette</li>
+<li><strong>Detail:</strong> Sharpening, Noise Reduction</li>
+<li><strong>Presets:</strong> Áp dụng preset và tinh chỉnh thêm</li>
+</ul>
+
+<h2>3. Quy Tắc Chỉnh Sửa</h2>
+<ul>
+<li><strong>Less is more:</strong> Chỉnh ít hơn bạn nghĩ là cần</li>
+<li><strong>Bảo vệ highlights:</strong> Kéo highlights xuống trước, giữ chi tiết vùng sáng</li>
+<li><strong>Shadow recovery:</strong> Kéo shadows lên để thấy chi tiết vùng tối</li>
+<li><strong>Đừng làm oversaturate:</strong> Tăng saturation quá nhiều làm ảnh giả, phản cảm</li>
+</ul>
+
+<div class="tip-box">
+<strong>Mẹo:</strong> Sau khi chỉnh xong, để điện thoại xuống 5 phút. Quay lại xem lại - bạn sẽ thấy những lỗi chỉnh quá tay. Giảm bớt 20-30%.
+</div>
+    `,
+    quiz: [
+      {
+        question: "Thứ tự chỉnh sửa đúng là gì?",
+        options: ["Màu sắc trước, sáng sau", "Sáng (exposure/WB) trước, màu sắc/chi tiết sau", "Chi tiết trước, sáng sau", "Không cần thứ tự"],
+        correctIndex: 1,
+        explanation: "Luôn chỉnh sáng và white balance trước (nền tảng), sau đó mới đến màu sắc và chi tiết."
+      },
+      {
+        question: "Selective Adjust trong Snapseed dùng để làm gì?",
+        options: ["Chỉnh toàn bộ ảnh", "Chỉnh riêng 1 vùng cụ thể trên ảnh", "Thêm filter", "Xoá phông"],
+        correctIndex: 1,
+        explanation: "Selective Adjust cho phép chạm vào 1 điểm và chỉnh brightness/contrast/saturation chỉ cho vùng đó."
+      },
+      {
+        question: "Tại sao nên kéo Highlights xuống?",
+        options: ["Để ảnh tối hơn", "Để giữ lại chi tiết ở vùng sáng bị cháy", "Để tăng tương phản", "Để làm mờ ảnh"],
+        correctIndex: 1,
+        explanation: "Kéo highlights xuống giúp lấy lại chi tiết ở vùng sáng bị 'cháy' (overexposed), đặc biệt với file RAW."
+      }
+    ],
+    exercises: [
+      {
+        title: "Before & After Challenge",
+        description: "Chọn 5 bức ảnh chưa chỉnh. Chỉnh sửa từng bức bằng Snapseed. Lưu cả bản gốc và bản đã chỉnh để so sánh.",
+        tips: ["Bắt đầu với Tune Image, sau đó mới dùng các tool khác", "Thử Selective Adjust cho vùng trời hoặc mặt người", "Xuất ảnh chất lượng cao nhất"]
+      }
+    ]
   }
 ];

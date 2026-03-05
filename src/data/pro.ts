@@ -508,5 +508,171 @@ export const proLessons: Lesson[] = [
         tips: ["Không cần hoàn hảo - viết ra để có định hướng", "Nghiên cứu giá của 5 nhiếp ảnh gia cùng niche trong khu vực", "Tính chi phí thiết bị bạn đã có và cần mua thêm"]
       }
     ]
+  },
+  {
+    id: "fine-art-photography",
+    title: "Nhiếp Ảnh Nghệ Thuật (Fine Art)",
+    description: "Conceptual photography, visual storytelling, gallery exhibition - từ nhiếp ảnh gia thành nghệ sĩ",
+    content: `
+<h2>Fine Art Photography Là Gì?</h2>
+<p>Fine art photography là <strong>nhiếp ảnh như một hình thức nghệ thuật</strong> - mục đích là biểu đạt ý tưởng, cảm xúc, không phải ghi chép thực tế.</p>
+
+<h2>1. Conceptual Photography</h2>
+<p>Ảnh được tạo ra để truyền tải 1 <strong>ý tưởng hoặc thông điệp cụ thể</strong>:</p>
+<ul>
+<li><strong>Brainstorm:</strong> Bắt đầu từ ý tưởng, cảm xúc, hoặc vấn đề xã hội</li>
+<li><strong>Mood board:</strong> Thu thập hình ảnh cảm hứng từ hội hoạ, phim, sách</li>
+<li><strong>Storyboard:</strong> Lên kế hoạch chi tiết từng bức ảnh</li>
+<li><strong>Execution:</strong> Setup, chụp, hậu kỳ theo kế hoạch</li>
+</ul>
+
+<h2>2. Visual Storytelling</h2>
+<ul>
+<li><strong>Symbolism:</strong> Dùng biểu tượng để truyền tải ý nghĩa sâu hơn</li>
+<li><strong>Metaphor:</strong> Ẩn dụ thị giác - biểu đạt điều trừu tượng bằng hình ảnh cụ thể</li>
+<li><strong>Color palette:</strong> Màu sắc có chủ đích tạo cảm xúc</li>
+<li><strong>Composition:</strong> Bố cục phục vụ ý tưởng, không chỉ đẹp</li>
+</ul>
+
+<h2>3. Self-Portrait & Performance</h2>
+<ul>
+<li>Cindy Sherman, Francesca Woodman - tự hoạ là một thể loại fine art mạnh</li>
+<li>Dùng timer, remote, hoặc người giúp bấm máy</li>
+<li>Không phải "selfie" - mỗi bức là 1 nhân vật, 1 câu chuyện</li>
+</ul>
+
+<h2>4. Long Exposure Art</h2>
+<ul>
+<li>Phơi sáng 30s-30 phút tạo hiệu ứng siêu thực</li>
+<li>Người đi bộ biến mất, nước thành sương mù, mây thành vệt kẻ</li>
+<li>Michael Kenna, Hiroshi Sugimoto là bậc thầy của kỹ thuật này</li>
+</ul>
+
+<h2>5. Trình Bày & Triển Lãm</h2>
+<h3>In Ấn:</h3>
+<ul>
+<li>Chọn giấy: Hahnemuhle, Canson, Epson Fine Art</li>
+<li>Kích thước: tối thiểu 40x60cm cho gallery</li>
+<li>Framing: khung đơn giản, mặt kính bảo vệ UV</li>
+</ul>
+<h3>Artist Statement:</h3>
+<ul>
+<li>Mỗi series cần 1 artist statement (200-500 từ)</li>
+<li>Giải thích ý tưởng, động cơ, và quy trình</li>
+<li>Không mô tả ảnh - giải thích TẠI SAO</li>
+</ul>
+
+<div class="info-box">
+<strong>Khác biệt:</strong> Commercial photography hỏi "khách hàng muốn gì?". Fine art photography hỏi "TÔI muốn nói gì?". Đây là sự tự do sáng tạo tuyệt đối.
+</div>
+    `,
+    quiz: [
+      {
+        question: "Điểm khác biệt chính giữa fine art và commercial photography?",
+        options: ["Thiết bị sử dụng", "Mục đích: biểu đạt bản thân vs phục vụ khách hàng", "Kỹ thuật chụp", "Không có sự khác biệt"],
+        correctIndex: 1,
+        explanation: "Fine art phục vụ tầm nhìn nghệ thuật cá nhân, commercial phục vụ nhu cầu khách hàng."
+      },
+      {
+        question: "Artist statement là gì?",
+        options: ["Hoá đơn bán ảnh", "Văn bản giải thích ý tưởng và động cơ của tác phẩm", "Công thức chỉnh ảnh", "Tên bức ảnh"],
+        correctIndex: 1,
+        explanation: "Artist statement là văn bản ngắn giải thích ý tưởng, động cơ sáng tạo và quy trình của series ảnh."
+      },
+      {
+        question: "Conceptual photography bắt đầu từ đâu?",
+        options: ["Từ máy ảnh", "Từ ý tưởng/concept", "Từ địa điểm chụp", "Từ hậu kỳ"],
+        correctIndex: 1,
+        explanation: "Conceptual photography bắt đầu từ ý tưởng. Tất cả quyết định đều phục vụ concept đó."
+      }
+    ],
+    exercises: [
+      {
+        title: "Tạo 1 Mini Series",
+        description: "Chọn 1 chủ đề (cô đơn, thời gian, ký ức). Lên concept, chụp 5-7 bức ảnh thống nhất. Viết artist statement 200 từ.",
+        tips: ["Bắt đầu với ý tưởng, không phải kỹ thuật", "Mỗi bức ảnh phải liên kết với chủ đề", "Nhờ người khác nhận xét"]
+      }
+    ]
+  },
+  {
+    id: "ai-photography",
+    title: "AI Trong Nhiếp Ảnh",
+    description: "AI editing, computational photography, tương lai nhiếp ảnh với trí tuệ nhân tạo",
+    content: `
+<h2>AI Đang Thay Đổi Nhiếp Ảnh</h2>
+<p>Trí tuệ nhân tạo đang cách mạng hoá <strong>cả quy trình chụp và hậu kỳ</strong>. Hiểu và sử dụng AI là kỹ năng bắt buộc của nhiếp ảnh gia hiện đại.</p>
+
+<h2>1. AI Trong Máy Ảnh</h2>
+<ul>
+<li><strong>Eye AF:</strong> AI nhận diện mắt người/động vật chính xác</li>
+<li><strong>Subject Detection:</strong> Nhận diện xe, chim, máy bay để tracking</li>
+<li><strong>Scene Recognition:</strong> Tự động nhận diện cảnh và tối ưu thông số</li>
+<li><strong>Computational Photography:</strong> HDR, Night Mode, Portrait Mode trên smartphone</li>
+</ul>
+
+<h2>2. AI Trong Hậu Kỳ</h2>
+<h3>Adobe Sensei (Lightroom/Photoshop):</h3>
+<ul>
+<li><strong>Select Subject:</strong> Tự động chọn chủ thể chính xác</li>
+<li><strong>Content-Aware Fill:</strong> Xoá vật thể và AI tự điền vào</li>
+<li><strong>Sky Replacement:</strong> Thay trời tự động</li>
+<li><strong>Denoise AI:</strong> Giảm noise giữ chi tiết tốt hơn xa</li>
+<li><strong>Super Resolution:</strong> Tăng độ phân giải ảnh</li>
+</ul>
+
+<h3>Các Tool AI Khác:</h3>
+<ul>
+<li><strong>Topaz Photo AI:</strong> Denoise + Sharpen + Upscale tốt nhất hiện tại</li>
+<li><strong>Luminar Neo:</strong> AI sky, portrait retouch, background removal</li>
+<li><strong>Remove.bg:</strong> Xoá nền tự động</li>
+</ul>
+
+<h2>3. AI Image Generation</h2>
+<ul>
+<li><strong>Midjourney, DALL-E, Stable Diffusion:</strong> Tạo ảnh từ text</li>
+<li><strong>Inpainting:</strong> AI vẽ thêm/sửa vùng cụ thể trong ảnh thật</li>
+<li><strong>Style Transfer:</strong> Áp dụng phong cách nghệ thuật lên ảnh</li>
+<li><strong>Upscaling:</strong> Nâng cấp ảnh cũ lên độ phân giải cao</li>
+</ul>
+
+<h2>4. Đạo Đức và Bản Quyền</h2>
+<ul>
+<li><strong>Công khai:</strong> Ghi rõ khi ảnh có sử dụng AI</li>
+<li><strong>Cuộc thi:</strong> Nhiều cuộc thi cấm ảnh AI-generated</li>
+<li><strong>Bản quyền:</strong> Vấn đề pháp lý còn đang tranh cãi</li>
+<li><strong>Thực tế:</strong> AI là công cụ, không thay thế tầm nhìn nghệ thuật của bạn</li>
+</ul>
+
+<div class="tip-box">
+<strong>Quan điểm:</strong> AI là cơ hội, không phải mối đe doạ. Những ai biết kết hợp kỹ năng truyền thống + AI sẽ dẫn đầu.
+</div>
+    `,
+    quiz: [
+      {
+        question: "Topaz Photo AI được đánh giá tốt nhất ở lĩnh vực nào?",
+        options: ["Tạo ảnh mới", "Denoise, Sharpen và Upscale ảnh", "Chỉnh màu sắc", "Xoá nền"],
+        correctIndex: 1,
+        explanation: "Topaz Photo AI được đánh giá là tool AI tốt nhất hiện tại cho việc giảm noise, tăng độ nét và tăng độ phân giải ảnh."
+      },
+      {
+        question: "Computational Photography là gì?",
+        options: ["Chụp ảnh bằng máy tính", "Dùng AI xử lý nhiều khung hình để tạo 1 ảnh tốt hơn", "Chỉnh ảnh bằng Photoshop", "Chụp ảnh 3D"],
+        correctIndex: 1,
+        explanation: "Computational Photography sử dụng thuật toán AI để ghép nhiều khung hình, tạo HDR, Night Mode, Portrait Mode."
+      },
+      {
+        question: "Điều gì quan trọng nhất về đạo đức khi dùng AI trong nhiếp ảnh?",
+        options: ["Dùng càng nhiều AI càng tốt", "Công khai khi ảnh có sử dụng AI", "Ẩn đi việc dùng AI", "AI không liên quan đến đạo đức"],
+        correctIndex: 1,
+        explanation: "Minh bạch và trung thực là quan trọng nhất. Ghi rõ khi ảnh có sử dụng AI, đặc biệt trong báo chí và cuộc thi."
+      }
+    ],
+    exercises: [
+      {
+        title: "AI Workflow",
+        description: "Chọn 5 bức ảnh cũ (có noise, độ phân giải thấp). Dùng Topaz Photo AI hoặc Lightroom Denoise để cải thiện. So sánh before/after.",
+        tips: ["Thử với ảnh ISO cao để thấy hiệu quả denoise rõ nhất", "So sánh AI denoise với denoise truyền thống", "Thử upscale 1 ảnh điện thoại cũ lên 4K"]
+      }
+    ]
   }
 ];

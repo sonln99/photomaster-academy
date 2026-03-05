@@ -529,5 +529,264 @@ export const professionalLessons: Lesson[] = [
         tips: ["Để hậu cảnh có nhiều điểm sáng (lá cây, đèn) để thấy bokeh rõ", "Thử các tiêu cự khác nhau: 50mm vs 85mm", "Gần chủ thể + xa hậu cảnh = bokeh đẹp nhất"]
       }
     ]
+  },
+  {
+    id: "flash-photography",
+    title: "Sử Dụng Đèn Flash",
+    description: "On-camera, off-camera flash, TTL, manual - làm chủ đèn flash",
+    content: `
+<h2>Tại Sao Cần Flash?</h2>
+<p>Flash giúp bạn <strong>kiểm soát ánh sáng hoàn toàn</strong>, không phụ thuộc vào điều kiện tự nhiên. Là công cụ không thể thiếu của nhiếp ảnh gia chuyên nghiệp.</p>
+
+<h2>1. On-Camera Flash</h2>
+<ul>
+<li><strong>Bounce flash:</strong> Đẩy đầu flash lên trần hoặc tường để tạo soft light</li>
+<li><strong>Diffuser:</strong> Gắn phụ kiện tản sáng trên đầu flash</li>
+<li><strong>Fill flash:</strong> Dùng ngoài trời để fill bóng mặt (đặc biệt giữa trưa)</li>
+<li><strong>Tránh:</strong> Flash trực tiếp vào mặt - tạo bóng cứng, mắt đỏ</li>
+</ul>
+
+<h2>2. Off-Camera Flash (OCF)</h2>
+<p>Flash tách khỏi máy ảnh, điều khiển từ xa:</p>
+<ul>
+<li><strong>Trigger:</strong> Bộ phát/nhận (Godox, Profoto) kết nối flash với máy</li>
+<li><strong>Vị trí:</strong> Đặt flash ở bất kỳ vị trí nào - sáng tạo không giới hạn</li>
+<li><strong>Modifier:</strong> Softbox, umbrella, beauty dish thay đổi chất lượng sáng</li>
+<li><strong>Multi-flash:</strong> 2-3 đèn tạo hệ thống sáng phức tạp</li>
+</ul>
+
+<h2>3. TTL vs Manual</h2>
+<h3>TTL (Through The Lens)</h3>
+<ul>
+<li>Máy tự động tính công suất flash</li>
+<li>Nhanh, tiện lợi khi điều kiện thay đổi liên tục</li>
+<li>Dùng flash compensation (+/-) để tinh chỉnh</li>
+</ul>
+<h3>Manual</h3>
+<ul>
+<li>Bạn tự chọn công suất: 1/1 (full), 1/2, 1/4, 1/8...</li>
+<li>Nhất quán, không thay đổi giữa các tấm</li>
+<li>Bắt buộc trong studio và khi dùng nhiều đèn</li>
+</ul>
+
+<h2>4. High-Speed Sync (HSS)</h2>
+<ul>
+<li>Cho phép dùng flash với tốc độ nhanh hơn sync speed (thường 1/200s-1/250s)</li>
+<li>Dùng để: chụp f/1.4 ngoài nắng với flash fill, đóng băng chuyển động với flash</li>
+<li>Nhược điểm: giảm công suất flash</li>
+</ul>
+
+<h2>5. Flash và Ambient Balance</h2>
+<p>Cân bằng giữa ánh sáng flash và ánh sáng môi trường:</p>
+<ul>
+<li><strong>Tốc độ:</strong> Kiểm soát ambient (chậm = nhiều ambient, nhanh = ít ambient)</li>
+<li><strong>Khẩu độ:</strong> Kiểm soát flash (đóng = ít flash, mở = nhiều flash)</li>
+<li><strong>Kết hợp:</strong> Điều chỉnh 2 yếu tố để cân bằng theo ý muốn</li>
+</ul>
+
+<div class="tip-box">
+<strong>Mẹo:</strong> Bắt đầu với 1 đèn flash + 1 umbrella shoot-through. Chỉ cần bộ này bạn đã có thể chụp chuyên nghiệp. Off-camera flash là bước nhảy lớn nhất trong kỹ năng ánh sáng.
+</div>
+    `,
+    quiz: [
+      {
+        question: "Bounce flash là gì?",
+        options: ["Bắn flash trực tiếp vào chủ thể", "Đẩy đầu flash lên trần/tường để tản sáng", "Tắt flash đi", "Dùng 2 flash cùng lúc"],
+        correctIndex: 1,
+        explanation: "Bounce flash đẩy ánh sáng lên trần hoặc tường, biến nguồn sáng nhỏ (flash) thành nguồn sáng lớn (cả trần nhà), tạo soft light."
+      },
+      {
+        question: "Khi nào nên dùng Manual flash thay vì TTL?",
+        options: ["Khi chụp ngoài trời", "Khi cần kết quả nhất quán và dùng nhiều đèn", "Khi pin yếu", "Khi chụp nhanh"],
+        correctIndex: 1,
+        explanation: "Manual flash cho kết quả nhất quán giữa các tấm và bắt buộc khi setup nhiều đèn vì TTL không thể tính toán chính xác cho nhiều nguồn sáng."
+      },
+      {
+        question: "High-Speed Sync dùng để làm gì?",
+        options: ["Tăng công suất flash", "Dùng flash với tốc độ nhanh hơn sync speed bình thường", "Làm flash nhấp nháy nhanh", "Giảm noise"],
+        correctIndex: 1,
+        explanation: "HSS cho phép dùng flash với tốc độ 1/500s, 1/1000s..., giúp chụp khẩu độ lớn (f/1.4) ngoài nắng mà vẫn có thể fill flash."
+      }
+    ],
+    exercises: [
+      {
+        title: "Bounce Flash Trong Nhà",
+        description: "Chụp chân dung trong nhà với flash. Chụp 3 kiểu: flash trực tiếp, bounce trần, bounce tường. So sánh chất lượng ánh sáng.",
+        tips: ["Trần trắng cho bounce đẹp nhất", "Trần cao cần tăng công suất flash", "Thử với và không diffuser"]
+      }
+    ]
+  },
+  {
+    id: "event-photography",
+    title: "Chụp Sự Kiện & Tiệc",
+    description: "Wedding, corporate event, party - kỹ thuật chụp sự kiện chuyên nghiệp",
+    content: `
+<h2>Chụp Sự Kiện Là Gì?</h2>
+<p>Event photography yêu cầu bạn chụp <strong>nhanh, chính xác, trong điều kiện không lý tưởng</strong> và KHÔNG được bỏ lỡ khoảnh khắc quan trọng.</p>
+
+<h2>1. Thiết Bị Cần Thiết</h2>
+<ul>
+<li><strong>2 thân máy:</strong> 1 chính + 1 dự phòng (máy hỏng giữa sự kiện = thảm hoạ)</li>
+<li><strong>Ống kính:</strong> 24-70mm f/2.8 (đa năng) + 70-200mm f/2.8 (xa) + 35mm f/1.4 (thiếu sáng)</li>
+<li><strong>Flash:</strong> 2 đèn speedlight + diffuser + pin dự phòng</li>
+<li><strong>Thẻ nhớ:</strong> Nhiều thẻ nhớ (dùng 1 thẻ cho toàn bộ sự kiện = rủi ro cao)</li>
+<li><strong>Pin:</strong> Ít nhất 4-6 pin đầy</li>
+</ul>
+
+<h2>2. Thiết Lập Máy Ảnh</h2>
+<ul>
+<li><strong>Chế độ:</strong> Av (f/2.8-4) với Auto ISO (giới hạn 6400)</li>
+<li><strong>AF:</strong> AF-C với Eye Detect hoặc Zone AF</li>
+<li><strong>Drive:</strong> Continuous (burst) để chụp nhiều frame</li>
+<li><strong>WB:</strong> Auto hoặc Flash (nếu dùng flash)</li>
+<li><strong>Format:</strong> RAW + JPEG (JPEG để xem nhanh, RAW để chỉnh sau)</li>
+</ul>
+
+<h2>3. Shot List Cơ Bản</h2>
+<h3>Wedding:</h3>
+<ul>
+<li>Chuẩn bị: cô dâu/chú rể makeup, mặc đồ</li>
+<li>Lễ: trao nhẫn, hôn, cảm xúc gia đình</li>
+<li>Nhóm: gia đình, bạn bè (có danh sách trước)</li>
+<li>Chi tiết: hoa, bánh, trang trí, thiệp mời</li>
+<li>Tiệc: cắt bánh, nhảy, toast, pha bouquet</li>
+</ul>
+
+<h3>Corporate Event:</h3>
+<ul>
+<li>Overview: toàn cảnh sự kiện</li>
+<li>Speakers: diễn giả trên sân khấu</li>
+<li>Networking: người tham gia tương tác</li>
+<li>Branding: logo, banner, standee</li>
+</ul>
+
+<h2>4. Kỹ Thuật Chụp</h2>
+<ul>
+<li><strong>Dự đoán:</strong> Di chuyển trước đến vị trí tốt trước khoảnh khắc xảy ra</li>
+<li><strong>2 góc:</strong> Chụp cả wide (bối cảnh) và tight (cảm xúc)</li>
+<li><strong>Ánh sáng:</strong> Bounce flash + kéo shadows trong hậu kỳ</li>
+<li><strong>Backup:</strong> Copy ảnh sang laptop mỗi 2-3 giờ</li>
+</ul>
+
+<div class="tip-box">
+<strong>Quy tắc vàng:</strong> "If you didn't capture the moment, it didn't happen." Bạn KHÔNG được bỏ lỡ những khoảnh khắc quan trọng. Luôn sẵn sàng, luôn quan sát.
+</div>
+    `,
+    quiz: [
+      {
+        question: "Tại sao cần 2 thân máy khi chụp sự kiện?",
+        options: ["Để chụp nhanh hơn", "Dự phòng khi máy chính hỏng", "Để 2 người chụp", "Để trang trí"],
+        correctIndex: 1,
+        explanation: "Máy ảnh có thể hỏng bất cứ lúc nào. Tại sự kiện, bạn không thể nói 'đợi một chút' - phải có máy dự phòng sẵn sàng."
+      },
+      {
+        question: "Nên sử dụng bao nhiêu thẻ nhớ cho sự kiện?",
+        options: ["1 thẻ nhớ lớn", "Nhiều thẻ nhớ (chia rủi ro)", "Không cần thẻ nhớ, chụp thẳng vào máy tính", "2 thẻ là đủ"],
+        correctIndex: 1,
+        explanation: "Dùng nhiều thẻ nhớ để chia rủi ro. Nếu 1 thẻ hỏng, bạn chỉ mất 1 phần ảnh thay vì toàn bộ sự kiện."
+      },
+      {
+        question: "Khi chụp wedding, việc gì quan trọng nhất?",
+        options: ["Chụp đẹp", "Không bỏ lỡ khoảnh khắc quan trọng", "Dùng ống kính đắt tiền", "Chụp nhiều ảnh nhất có thể"],
+        correctIndex: 1,
+        explanation: "Khoảnh khắc như trao nhẫn, nụ hôn, cảm xúc gia đình chỉ xảy ra 1 lần. Bỏ lỡ = không thể làm lại."
+      }
+    ],
+    exercises: [
+      {
+        title: "Thực Hành Chụp Sự Kiện",
+        description: "Tìm 1 sự kiện nhỏ (sinh nhật, họp lớp, tiệc). Làm shot list trước, chụp và review. So sánh với shot list xem đã chụp đủ chưa.",
+        tips: ["Đến sớm để khảo sát địa điểm", "Làm quen với ánh sáng tại chỗ", "Luôn có plan B cho tình huống thiếu sáng"]
+      }
+    ]
+  },
+  {
+    id: "drone-photography",
+    title: "Chụp Ảnh Flycam/Drone",
+    description: "Aerial photography - góc nhìn từ trên cao, kỹ thuật và luật pháp",
+    content: `
+<h2>Sức Mạnh Của Góc Nhìn Từ Trên Cao</h2>
+<p>Drone photography mở ra <strong>góc nhìn hoàn toàn mới</strong> mà mắt thường không thể thấy. Phong cảnh, kiến trúc, bất động sản đều đẹp hơn từ trên cao.</p>
+
+<h2>1. Chọn Drone</h2>
+<ul>
+<li><strong>DJI Mini (dưới 249g):</strong> Nhẹ, không cần đăng ký ở nhiều nước, chất lượng tốt</li>
+<li><strong>DJI Air:</strong> Cảm biến lớn hơn, quay 4K tốt, obstacle avoidance</li>
+<li><strong>DJI Mavic Pro:</strong> Chuyên nghiệp, cảm biến 1 inch, chụp RAW</li>
+</ul>
+
+<h2>2. Thiết Lập Chụp Ảnh</h2>
+<ul>
+<li><strong>Format:</strong> Chụp RAW (DNG) để có dữ liệu chỉnh sửa</li>
+<li><strong>ISO:</strong> Giữ ISO 100-200 (cảm biến nhỏ = nhiều noise)</li>
+<li><strong>Tốc độ:</strong> 1/500s trở lên để tránh rung</li>
+<li><strong>WB:</strong> Auto hoặc Daylight</li>
+<li><strong>AEB:</strong> Chụp bracketing 3-5 tấm để làm HDR</li>
+</ul>
+
+<h2>3. Kỹ Thuật Chụp</h2>
+<h3>Các Góc Chụp Phổ Biến:</h3>
+<ul>
+<li><strong>Top-down (90 độ):</strong> Nhìn thẳng xuống - tạo hình học, pattern thú vị</li>
+<li><strong>45 độ:</strong> Góc tự nhiên nhất, thể hiện cả chiều cao và chiều sâu</li>
+<li><strong>Ngang (0 độ):</strong> Như góc nhìn của chim, hiển thị horizon</li>
+<li><strong>Reveal shot:</strong> Bay lên từ thấp lên cao, lộ dần phong cảnh</li>
+</ul>
+
+<h3>Bố Cục Từ Trên Cao:</h3>
+<ul>
+<li>Tìm các đường dẫn: sông, đường, ranh giới</li>
+<li>Tìm patterns: ruộng bậc thang, nhà ở, cây cối</li>
+<li>Tìm tương phản màu sắc: nước xanh vs cát trắng</li>
+<li>Tìm bóng: bóng cây, bóng nhà tạo hình thú vị từ trên cao</li>
+</ul>
+
+<h2>4. Golden Hour Là Tốt Nhất</h2>
+<ul>
+<li>Ánh sáng ấm, bóng dài từ trên cao rất đẹp</li>
+<li>Tránh giữa trưa - ánh sáng phẳng, ít bóng</li>
+<li>Sau mưa: không khí trong, màu sắc tươi</li>
+</ul>
+
+<h2>5. Luật Pháp Và An Toàn</h2>
+<ul>
+<li><strong>Đăng ký:</strong> Kiểm tra luật địa phương về đăng ký drone</li>
+<li><strong>Vùng cấm:</strong> Không bay gần sân bay, cơ sở quân sự, khu đông người</li>
+<li><strong>Độ cao:</strong> Thường giới hạn 120m</li>
+<li><strong>Tầm nhìn:</strong> Luôn giữ drone trong tầm nhìn (VLOS)</li>
+<li><strong>Thời tiết:</strong> Không bay khi gió mạnh, mưa, sương mù</li>
+</ul>
+
+<div class="tip-box">
+<strong>An toàn là trên hết:</strong> Drone rơi có thể gây thương tích và hư hại tài sản. Luôn kiểm tra pin, cánh quạt, và điều kiện thời tiết trước khi bay.
+</div>
+    `,
+    quiz: [
+      {
+        question: "Tại sao nên giữ ISO thấp khi chụp drone?",
+        options: ["Để tiết kiệm pin", "Cảm biến drone nhỏ nên dễ bị noise ở ISO cao", "Để chụp nhanh hơn", "Không có lý do"],
+        correctIndex: 1,
+        explanation: "Drone có cảm biến nhỏ hơn máy ảnh thường, nên rất dễ bị noise ở ISO cao. Giữ ISO 100-200 để có chất lượng tốt nhất."
+      },
+      {
+        question: "Góc chụp top-down (90 độ) từ drone tạo hiệu ứng gì?",
+        options: ["Chiều sâu 3D", "Hình học và pattern thú vị", "Xoá phông đẹp", "Panorama"],
+        correctIndex: 1,
+        explanation: "Nhìn thẳng xuống tạo ra những hình ảnh đồ hoạ, geometric - các pattern, đường kẻ, hình học mà mắt thường không thấy."
+      },
+      {
+        question: "Điều gì KHÔNG nên làm khi bay drone?",
+        options: ["Chụp RAW", "Bay gần sân bay và khu đông người", "Bay vào golden hour", "Kiểm tra pin trước khi bay"],
+        correctIndex: 1,
+        explanation: "Bay gần sân bay và khu đông người là vi phạm pháp luật và cực kỳ nguy hiểm. Luôn kiểm tra vùng cấm trước khi bay."
+      }
+    ],
+    exercises: [
+      {
+        title: "Khám Phá Góc Nhìn Trên Cao",
+        description: "Nếu có drone, chọn 1 địa điểm đẹp (công viên, hồ, ruộng). Chụp ở 3 góc: top-down, 45 độ, ngang. Mỗi góc chụp 5-10 tấm. So sánh.",
+        tips: ["Bay vào golden hour để có ánh sáng đẹp nhất", "Tìm các pattern tự nhiên: đường đi, cây cối, nước", "Luôn kiểm tra pin và vùng cấm bay"]
+      }
+    ]
   }
 ];
