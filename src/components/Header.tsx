@@ -2,17 +2,19 @@
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useState } from "react";
-
-const navLinks = [
-  { href: "/courses/beginner", label: "Cơ Bản", color: "var(--accent-beginner)" },
-  { href: "/courses/professional", label: "Chuyên Nghiệp", color: "var(--accent-professional)" },
-  { href: "/courses/pro", label: "Bậc Thầy", color: "var(--accent-pro)" },
-];
+import { useLanguage } from "@/lib/LanguageContext";
 
 export default function Header() {
   const { data: session } = useSession();
+  const { locale, t, setLocale } = useLanguage();
   const [showMenu, setShowMenu] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navLinks = [
+    { href: "/courses/beginner", label: t.nav.beginner },
+    { href: "/courses/professional", label: t.nav.professional },
+    { href: "/courses/pro", label: t.nav.pro },
+  ];
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/[0.06]">
@@ -42,6 +44,16 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
+
+          <div className="w-px h-6 bg-[var(--border)] mx-2" />
+
+          {/* Language switcher */}
+          <button
+            onClick={() => setLocale(locale === "vi" ? "en" : "vi")}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/[0.04] transition border border-[var(--border)]"
+          >
+            {locale === "vi" ? "EN" : "VI"}
+          </button>
 
           <div className="w-px h-6 bg-[var(--border)] mx-2" />
 
@@ -80,7 +92,7 @@ export default function Header() {
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
                         </svg>
-                        Lịch sử học tập
+                        {t.nav.history}
                       </Link>
                       <Link
                         href="/certificates"
@@ -90,7 +102,7 @@ export default function Header() {
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M12 15l-2 5l2-2 2 2-2-5z"/><circle cx="12" cy="9" r="6"/>
                         </svg>
-                        Chứng chỉ
+                        {t.nav.certificates}
                       </Link>
                     </div>
                     <div className="border-t border-white/[0.06] pt-1">
@@ -101,7 +113,7 @@ export default function Header() {
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
                         </svg>
-                        Đăng xuất
+                        {t.nav.logout}
                       </button>
                     </div>
                   </div>
@@ -116,24 +128,32 @@ export default function Header() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
-              Đăng nhập
+              {t.nav.login}
             </button>
           )}
         </nav>
 
         {/* Mobile menu button */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 rounded-lg hover:bg-white/[0.04] transition"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            {mobileOpen ? (
-              <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
-            ) : (
-              <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>
-            )}
-          </svg>
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            onClick={() => setLocale(locale === "vi" ? "en" : "vi")}
+            className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)] transition"
+          >
+            {locale === "vi" ? "EN" : "VI"}
+          </button>
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="p-2 rounded-lg hover:bg-white/[0.04] transition"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              {mobileOpen ? (
+                <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
+              ) : (
+                <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>
+              )}
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -154,16 +174,16 @@ export default function Header() {
               {session ? (
                 <>
                   <Link href="/history" onClick={() => setMobileOpen(false)} className="block px-4 py-3 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-white/[0.04] transition">
-                    Lịch sử học tập
+                    {t.nav.history}
                   </Link>
                   <Link href="/certificates" onClick={() => setMobileOpen(false)} className="block px-4 py-3 rounded-lg text-sm text-[var(--text-secondary)] hover:bg-white/[0.04] transition">
-                    Chứng chỉ
+                    {t.nav.certificates}
                   </Link>
                   <button
                     onClick={() => { signOut(); setMobileOpen(false); }}
                     className="w-full text-left px-4 py-3 rounded-lg text-sm text-red-400 hover:bg-red-500/10 transition"
                   >
-                    Đăng xuất
+                    {t.nav.logout}
                   </button>
                 </>
               ) : (
@@ -174,7 +194,7 @@ export default function Header() {
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                   </svg>
-                  Đăng nhập với Facebook
+                  {t.nav.loginFb}
                 </button>
               )}
             </div>

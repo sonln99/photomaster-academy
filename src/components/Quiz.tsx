@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { QuizQuestion } from "@/data/types";
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface QuizProps {
   questions: QuizQuestion[];
@@ -10,6 +11,7 @@ interface QuizProps {
 }
 
 export default function Quiz({ questions, onComplete }: QuizProps) {
+  const { t } = useLanguage();
   const [currentQ, setCurrentQ] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -44,7 +46,6 @@ export default function Quiz({ questions, onComplete }: QuizProps) {
     const isOk = percentage >= 60;
     return (
       <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-8 sm:p-10 text-center animate-fade-in-up">
-        {/* Score circle */}
         <div className="relative w-28 h-28 mx-auto mb-5">
           <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
             <circle cx="50" cy="50" r="42" fill="none" stroke="var(--border)" strokeWidth="6" />
@@ -63,10 +64,10 @@ export default function Quiz({ questions, onComplete }: QuizProps) {
           </div>
         </div>
         <p className="text-lg font-semibold mb-1">
-          {score}/{questions.length} câu đúng
+          {score}/{questions.length} {t.quiz.correct}
         </p>
         <p className="text-sm text-[var(--text-secondary)] max-w-xs mx-auto">
-          {isGreat ? "Xuất sắc! Bạn đã nắm vững kiến thức này." : isOk ? "Khá tốt! Nên ôn lại một số kiến thức." : "Cần học lại bài này kỹ hơn."}
+          {isGreat ? t.quiz.great : isOk ? t.quiz.ok : t.quiz.fail}
         </p>
       </div>
     );
@@ -74,10 +75,9 @@ export default function Quiz({ questions, onComplete }: QuizProps) {
 
   return (
     <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 sm:p-8 animate-fade-in">
-      {/* Progress header */}
       <div className="flex justify-between items-center mb-6">
         <span className="text-sm font-medium text-[var(--text-secondary)]">
-          Câu <span className="text-[var(--text-primary)]">{currentQ + 1}</span>/{questions.length}
+          {t.quiz.question} <span className="text-[var(--text-primary)]">{currentQ + 1}</span>/{questions.length}
         </span>
         <div className="flex gap-1.5">
           {questions.map((_, i) => (
@@ -93,7 +93,6 @@ export default function Quiz({ questions, onComplete }: QuizProps) {
         </div>
       </div>
 
-      {/* Progress bar */}
       <div className="h-1 bg-white/[0.06] rounded-full overflow-hidden mb-6">
         <div
           className="h-full bg-[var(--accent-gold)] rounded-full transition-all duration-500"
@@ -160,7 +159,7 @@ export default function Quiz({ questions, onComplete }: QuizProps) {
           onClick={handleNext}
           className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-black font-semibold text-sm hover:opacity-90 transition shadow-lg shadow-orange-500/20 flex items-center justify-center gap-2"
         >
-          {currentQ < questions.length - 1 ? "Câu tiếp theo" : "Xem kết quả"}
+          {currentQ < questions.length - 1 ? t.quiz.next : t.quiz.result}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="9 18 15 12 9 6"/>
           </svg>

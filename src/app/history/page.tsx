@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getLearningHistory, getCourseProgress, type HistoryEntry } from "@/lib/progress";
 import { courses, getLesson } from "@/data/courses";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export default function HistoryPage() {
+  const { t } = useLanguage();
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [progressMap, setProgressMap] = useState<Record<string, number>>({});
 
@@ -25,19 +27,17 @@ export default function HistoryPage() {
     <>
       <Header />
       <main className="pt-24 max-w-4xl mx-auto px-4 pb-20">
-        {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)] mb-8 animate-fade-in">
-          <Link href="/" className="hover:text-[var(--text-primary)] transition">Trang chủ</Link>
+          <Link href="/" className="hover:text-[var(--text-primary)] transition">{t.coursePage.home}</Link>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
-          <span className="text-[var(--text-primary)]">Lịch sử học tập</span>
+          <span className="text-[var(--text-primary)]">{t.history.title}</span>
         </div>
 
         <div className="mb-10 animate-fade-in-up">
-          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Lịch Sử Học Tập</h1>
-          <p className="text-[var(--text-secondary)]">Theo dõi tiến trình học tập của bạn</p>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">{t.history.title}</h1>
+          <p className="text-[var(--text-secondary)]">{t.history.desc}</p>
         </div>
 
-        {/* Overall Progress */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12 stagger-children">
           {courses.map((course) => {
             const p = progressMap[course.id] || 0;
@@ -54,9 +54,7 @@ export default function HistoryPage() {
                       <polyline points="9 18 15 12 9 6"/>
                     </svg>
                   </div>
-                  <div className="text-3xl font-bold mb-2" style={{ color: course.color }}>
-                    {p}%
-                  </div>
+                  <div className="text-3xl font-bold mb-2" style={{ color: course.color }}>{p}%</div>
                   <div className="h-2 bg-white/[0.06] rounded-full overflow-hidden mb-2">
                     <div
                       className="h-full rounded-full transition-all duration-700"
@@ -64,7 +62,7 @@ export default function HistoryPage() {
                     />
                   </div>
                   <p className="text-xs text-[var(--text-secondary)]">
-                    {completedCount}/{course.lessons.length} bài hoàn thành
+                    {completedCount}/{course.lessons.length} {t.history.lessonsCompleted}
                   </p>
                 </div>
               </Link>
@@ -72,12 +70,11 @@ export default function HistoryPage() {
           })}
         </div>
 
-        {/* History Timeline */}
         <h2 className="text-xl font-bold mb-5 flex items-center gap-2">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
           </svg>
-          Hoạt động gần đây
+          {t.history.recentActivity}
         </h2>
         {history.length === 0 ? (
           <div className="text-center py-20 rounded-2xl border border-dashed border-[var(--border)] bg-[var(--bg-card)]/50">
@@ -86,9 +83,9 @@ export default function HistoryPage() {
                 <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
               </svg>
             </div>
-            <p className="text-[var(--text-secondary)] mb-3">Chưa có hoạt động nào.</p>
+            <p className="text-[var(--text-secondary)] mb-3">{t.history.noActivity}</p>
             <Link href="/" className="inline-flex items-center gap-2 text-[var(--accent-gold)] text-sm font-medium hover:opacity-80 transition">
-              Bắt đầu học ngay
+              {t.history.startNow}
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
             </Link>
           </div>
@@ -111,7 +108,7 @@ export default function HistoryPage() {
                       <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                         <span style={{ color }}>{entry.courseId.charAt(0).toUpperCase() + entry.courseId.slice(1)}</span>
                         {entry.quizScore !== undefined && (
-                          <span className="ml-2 px-1.5 py-0.5 rounded bg-white/[0.04]">Quiz: {entry.quizScore} điểm</span>
+                          <span className="ml-2 px-1.5 py-0.5 rounded bg-white/[0.04]">Quiz: {entry.quizScore} {t.history.points}</span>
                         )}
                       </p>
                     </div>

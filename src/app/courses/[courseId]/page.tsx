@@ -5,10 +5,12 @@ import Header from "@/components/Header";
 import { getCourse } from "@/data/courses";
 import { useEffect, useState } from "react";
 import { isLessonComplete, getCourseProgress } from "@/lib/progress";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export default function CoursePage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = use(params);
   const course = getCourse(courseId);
+  const { t } = useLanguage();
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
   const [progress, setProgress] = useState(0);
 
@@ -27,8 +29,8 @@ export default function CoursePage({ params }: { params: Promise<{ courseId: str
       <>
         <Header />
         <main className="pt-24 text-center">
-          <p className="text-[var(--text-secondary)]">Không tìm thấy khoá học.</p>
-          <Link href="/" className="text-[var(--accent-gold)] text-sm mt-4 inline-block">← Về trang chủ</Link>
+          <p className="text-[var(--text-secondary)]">{t.coursePage.notFound}</p>
+          <Link href="/" className="text-[var(--accent-gold)] text-sm mt-4 inline-block">{t.coursePage.backHome}</Link>
         </main>
       </>
     );
@@ -40,14 +42,12 @@ export default function CoursePage({ params }: { params: Promise<{ courseId: str
     <>
       <Header />
       <main className="pt-24 max-w-4xl mx-auto px-4 pb-20">
-        {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)] mb-8 animate-fade-in">
-          <Link href="/" className="hover:text-[var(--text-primary)] transition">Trang chủ</Link>
+          <Link href="/" className="hover:text-[var(--text-primary)] transition">{t.coursePage.home}</Link>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
           <span className="text-[var(--text-primary)]">{course.title}</span>
         </div>
 
-        {/* Course Header */}
         <div className="mb-10 animate-fade-in-up">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${course.color}15` }}>
@@ -57,17 +57,16 @@ export default function CoursePage({ params }: { params: Promise<{ courseId: str
             </div>
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: course.color }}>{course.title}</h1>
-              <p className="text-sm text-[var(--text-secondary)]">{course.lessons.length} bài học</p>
+              <p className="text-sm text-[var(--text-secondary)]">{course.lessons.length} {t.card.lessonCount}</p>
             </div>
           </div>
           <p className="text-[var(--text-secondary)] leading-relaxed mb-5">{course.description}</p>
 
-          {/* Progress bar */}
           <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--bg-card)]">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-[var(--text-secondary)]">Tiến độ tổng thể</span>
+              <span className="text-sm text-[var(--text-secondary)]">{t.coursePage.overallProgress}</span>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-[var(--text-secondary)]">{completedCount}/{course.lessons.length} bài</span>
+                <span className="text-xs text-[var(--text-secondary)]">{completedCount}/{course.lessons.length} {t.coursePage.completed}</span>
                 <span className="text-sm font-bold" style={{ color: course.color }}>{progress}%</span>
               </div>
             </div>
@@ -80,7 +79,6 @@ export default function CoursePage({ params }: { params: Promise<{ courseId: str
           </div>
         </div>
 
-        {/* Lessons list */}
         <div className="space-y-3 stagger-children">
           {course.lessons.map((lesson, i) => (
             <Link key={lesson.id} href={`/courses/${courseId}/${lesson.id}`}>

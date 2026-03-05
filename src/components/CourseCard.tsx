@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Course } from "@/data/types";
 import { useEffect, useState } from "react";
 import { getCourseProgress } from "@/lib/progress";
+import { useLanguage } from "@/lib/LanguageContext";
 
 const levelIcons: Record<string, string> = {
   beginner: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253",
@@ -10,14 +11,15 @@ const levelIcons: Record<string, string> = {
   pro: "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z",
 };
 
-const levelLabels: Record<string, string> = {
-  beginner: "Cơ Bản",
-  professional: "Chuyên Nghiệp",
-  pro: "Bậc Thầy",
-};
-
 export default function CourseCard({ course }: { course: Course }) {
   const [progress, setProgress] = useState(0);
+  const { t } = useLanguage();
+
+  const levelLabels: Record<string, string> = {
+    beginner: t.nav.beginner,
+    professional: t.nav.professional,
+    pro: t.nav.pro,
+  };
 
   useEffect(() => {
     setProgress(getCourseProgress(course.id, course.lessons.length));
@@ -28,7 +30,6 @@ export default function CourseCard({ course }: { course: Course }) {
       <div
         className="group relative rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 sm:p-7 hover:border-white/10 transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden"
       >
-        {/* Glow effect on hover */}
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
           style={{ background: `radial-gradient(circle at 50% 0%, ${course.color}10, transparent 70%)` }}
@@ -60,20 +61,20 @@ export default function CourseCard({ course }: { course: Course }) {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
               </svg>
-              {course.lessons.length} bài học
+              {course.lessons.length} {t.card.lessonCount}
             </span>
             <span className="flex items-center gap-1.5">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01"/>
               </svg>
-              Quiz
+              {t.card.quiz}
             </span>
           </div>
 
           {progress > 0 && (
             <div className="mb-4">
               <div className="flex justify-between text-xs mb-1.5">
-                <span className="text-[var(--text-secondary)]">Tiến độ</span>
+                <span className="text-[var(--text-secondary)]">{t.card.progress}</span>
                 <span className="font-semibold" style={{ color: course.color }}>{progress}%</span>
               </div>
               <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
@@ -86,7 +87,7 @@ export default function CourseCard({ course }: { course: Course }) {
           )}
 
           <div className="flex items-center gap-2 text-sm font-semibold group-hover:gap-3 transition-all duration-300" style={{ color: course.color }}>
-            {progress > 0 ? "Tiếp tục học" : "Bắt đầu học"}
+            {progress > 0 ? t.card.continue : t.card.start}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="9 18 15 12 9 6"/>
             </svg>
