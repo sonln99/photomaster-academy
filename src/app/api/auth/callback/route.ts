@@ -25,7 +25,11 @@ export async function GET(req: NextRequest) {
       }
     );
 
-    await supabase.auth.exchangeCodeForSession(code);
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) {
+      console.error("[Auth Callback] Error:", error.message);
+      return NextResponse.redirect(`${origin}/?error=${encodeURIComponent(error.message)}`);
+    }
     return response;
   }
 
