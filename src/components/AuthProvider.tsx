@@ -166,6 +166,7 @@ function LeftSidebar() {
     { href: "/community", icon: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75", label: t.nav.community },
     { href: "/news", icon: "M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2", label: t.nav.news },
     { href: "/trends", icon: "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6", label: t.trends.title },
+    { href: "/critique", icon: "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9v2m0 4h.01", label: t.critique.title },
   ];
 
   const [expandedNav, setExpandedNav] = useState<string | null>(null);

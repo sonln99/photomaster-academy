@@ -98,6 +98,7 @@ export default function Header() {
             { href: "/community", label: t.nav.community, icon: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" },
             { href: "/news", label: t.nav.news, icon: "M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" },
             { href: "/trends", label: t.trends.title, icon: "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" },
+            { href: "/critique", label: t.critique.title, icon: "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 9v2m0 4h.01" },
           ].map((link) => (
             <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)}
               className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/[0.04] transition">
