@@ -74,21 +74,45 @@ export default function CritiquePage() {
     creativity: ct.creativity,
   };
 
-  const handleFile = (f: File) => {
-    if (!f.type.startsWith("image/")) return;
-    setFile(f);
-    setResult(null);
-    setError(null);
-    const reader = new FileReader();
-    reader.onload = (e) => setImage(e.target?.result as string);
-    reader.readAsDataURL(f);
+  const resizeImage = (f: File): Promise<{ file: File; dataUrl: string }> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 1024;
+        let w = img.width, h = img.height;
+        if (w > MAX || h > MAX) {
+          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+          else { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+        canvas.toBlob((blob) => {
+          const resized = new File([blob!], "photo.jpg", { type: "image/jpeg" });
+          resolve({ file: resized, dataUrl });
+        }, "image/jpeg", 0.8);
+      };
+      img.src = URL.createObjectURL(f);
+    });
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleFile = async (f: File) => {
+    if (!f.type.startsWith("image/")) return;
+    setResult(null);
+    setError(null);
+    const { file: resized, dataUrl } = await resizeImage(f);
+    setFile(resized);
+    setImage(dataUrl);
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
     const f = e.dataTransfer.files[0];
-    if (f) handleFile(f);
+    if (f) await handleFile(f);
   };
 
   const analyze = async () => {
@@ -158,7 +182,7 @@ export default function CritiquePage() {
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
                 className="hidden"
-                onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
+                onChange={async (e) => { const f = e.target.files?.[0]; if (f) await handleFile(f); }}
               />
             </div>
           ) : (
