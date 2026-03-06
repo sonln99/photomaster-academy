@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 
 export async function POST(req: NextRequest) {
-  if (!process.env.GEMINI_API_KEY) {
+  if (!process.env.GROQ_API_KEY) {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
   }
 
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
   const formData = await req.formData();
   const file = formData.get("image") as File | null;
@@ -29,12 +28,20 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const result = await model.generateContent([
-      {
-        inlineData: { mimeType, data: base64 },
-      },
-      {
-        text: `You are a professional photography critic and instructor. Analyze this photo and provide a detailed critique in Vietnamese. Return your response as a JSON object with this exact structure:
+    const result = await groq.chat.completions.create({
+      model: "llama-3.2-90b-vision-preview",
+      max_tokens: 2000,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "image_url",
+              image_url: { url: `data:${mimeType};base64,${base64}` },
+            },
+            {
+              type: "text",
+              text: `You are a professional photography critic and instructor. Analyze this photo and provide a detailed critique in Vietnamese. Return your response as a JSON object with this exact structure:
 
 {
   "overall_score": <number 1-100>,
@@ -48,10 +55,13 @@ export async function POST(req: NextRequest) {
 }
 
 Be constructive, specific, and educational. Reference photography concepts (rule of thirds, golden ratio, leading lines, color theory, etc.) where applicable. Return ONLY the JSON, no extra text.`,
-      },
-    ]);
+            },
+          ],
+        },
+      ],
+    });
 
-    const text = result.response.text();
+    const text = result.choices[0]?.message?.content || "";
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
     if (!parsed) {
