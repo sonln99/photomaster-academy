@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
       id,
       name: name || id,
       image: image || null,
-      provider: provider || "facebook",
+      provider: provider || "google",
       locale: locale || "vi",
     });
 

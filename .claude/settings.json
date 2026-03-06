@@ -62,7 +62,19 @@
       "Bash(node /tmp/test_itemlist2.mjs)",
       "Bash(gh api repos/sonln99/photomaster-academy/deployments --jq '.[0:3] | .[] | \"\"\\\\\\(.id\\) \\\\\\(.environment\\) \\\\\\(.created_at\\) \\\\\\(.description // \"\"no desc\"\"\\)\"\"')",
       "Bash(npx vercel ls)",
-      "Bash(npx vercel --prod --force)"
+      "Bash(npx vercel --prod --force)",
+      "Bash(npx vercel logs photomaster-academy.vercel.app --output json)",
+      "Bash(npx vercel logs photomaster-academy-6m9l2zqv7-sonln99s-projects.vercel.app)",
+      "Bash(npx vercel inspect photomaster-academy-6m9l2zqv7-sonln99s-projects.vercel.app --logs)",
+      "Bash(npx vercel env add TIKTOK_CLIENT_KEY production)",
+      "Bash(npx vercel env add TIKTOK_CLIENT_SECRET production)",
+      "Bash(npx vercel env rm TIKTOK_CLIENT_KEY production -y)",
+      "Bash(printf 'aw8l545rcdh2430y')",
+      "Bash(npx vercel env pull /tmp/.env.vercel --yes)",
+      "Bash(npx vercel env pull /tmp/.env.vercel.prod --environment production --yes)",
+      "Bash(npx vercel env rm TIKTOK_CLIENT_SECRET production -y)",
+      "Bash(printf 'H4FP9qKlO5JZoweZPvdz9TLE7drZsXk4')",
+      "WebFetch(domain:developers.tiktok.com)"
     ],
     "additionalDirectories": [
       "/Users/nosel/photomaster-academy/src/app/api/posts/[postId]",

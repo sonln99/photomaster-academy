@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/lib/auth";
 import { useLanguage } from "@/lib/LanguageContext";
 import { supabase } from "@/lib/supabase";
 
@@ -54,7 +54,7 @@ interface Application {
 }
 
 export default function CommunityPage() {
-  const { data: session } = useSession();
+  const { user: authUser } = useAuth();
   const { t } = useLanguage();
   const [tab, setTab] = useState<"events" | "jobs">("events");
 
@@ -81,9 +81,7 @@ export default function CommunityPage() {
   const [expandedJob, setExpandedJob] = useState<string | null>(null);
   const [jobForm, setJobForm] = useState({ title: "", date: "", location: "", price: "", note: "" });
 
-  const currentUserId = session?.user
-    ? (session.user as Record<string, unknown>).id as string || session.user.name || ""
-    : "";
+  const currentUserId = authUser?.id || "";
 
   // ---- Events logic ----
   useEffect(() => {
@@ -155,8 +153,8 @@ export default function CommunityPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           eventId, userId: currentUserId,
-          userName: session?.user?.name || "Anonymous",
-          userImage: session?.user?.image || null,
+          userName: authUser?.name || "Anonymous",
+          userImage: authUser?.image || null,
         }),
       });
       loadVotes(eventId);
@@ -240,8 +238,8 @@ export default function CommunityPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId: currentUserId,
-          userName: session?.user?.name || "Anonymous",
-          userImage: session?.user?.image || null,
+          userName: authUser?.name || "Anonymous",
+          userImage: authUser?.image || null,
           ...jobForm,
         }),
       });
@@ -263,8 +261,8 @@ export default function CommunityPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           jobId, userId: currentUserId,
-          userName: session?.user?.name || "Anonymous",
-          userImage: session?.user?.image || null,
+          userName: authUser?.name || "Anonymous",
+          userImage: authUser?.image || null,
           message: applyMsg,
         }),
       });

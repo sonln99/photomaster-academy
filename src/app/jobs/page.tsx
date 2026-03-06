@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/lib/auth";
 import { useLanguage } from "@/lib/LanguageContext";
 import { supabase } from "@/lib/supabase";
 
@@ -29,7 +29,7 @@ interface Application {
 }
 
 export default function JobsPage() {
-  const { data: session } = useSession();
+  const { user: authUser } = useAuth();
   const { t } = useLanguage();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [apps, setApps] = useState<Record<string, Application[]>>({});
@@ -41,9 +41,7 @@ export default function JobsPage() {
   const [expandedJob, setExpandedJob] = useState<string | null>(null);
   const [form, setForm] = useState({ title: "", date: "", location: "", price: "", note: "" });
 
-  const currentUserId = session?.user
-    ? (session.user as Record<string, unknown>).id as string || session.user.name || ""
-    : "";
+  const currentUserId = authUser?.id || "";
 
   useEffect(() => {
     fetch("/api/jobs")
@@ -98,8 +96,8 @@ export default function JobsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId: currentUserId,
-          userName: session?.user?.name || "Anonymous",
-          userImage: session?.user?.image || null,
+          userName: authUser?.name || "Anonymous",
+          userImage: authUser?.image || null,
           ...form,
         }),
       });
@@ -122,8 +120,8 @@ export default function JobsPage() {
         body: JSON.stringify({
           jobId,
           userId: currentUserId,
-          userName: session?.user?.name || "Anonymous",
-          userImage: session?.user?.image || null,
+          userName: authUser?.name || "Anonymous",
+          userImage: authUser?.image || null,
           message: applyMsg,
         }),
       });

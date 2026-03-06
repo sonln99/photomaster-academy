@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
-import { useSession, signIn } from "next-auth/react";
+import { useAuth } from "@/lib/auth";
 import { useLanguage } from "@/lib/LanguageContext";
 import { useState } from "react";
 
 export default function Header() {
-  const { data: session } = useSession();
+  const { user, signInWithGoogle, signInWithTikTok } = useAuth();
   const { locale, t, setLocale } = useLanguage();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -35,21 +35,21 @@ export default function Header() {
             {locale === "vi" ? "EN" : "VI"}
           </button>
 
-          {session ? (
+          {user ? (
             <Link href="/profile" className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-white/[0.04] transition">
-              {session.user?.image ? (
-                <img src={session.user.image} alt="" className="w-7 h-7 rounded-full ring-2 ring-white/10" />
+              {user?.image ? (
+                <img src={user.image} alt="" className="w-7 h-7 rounded-full ring-2 ring-white/10" />
               ) : (
                 <div className="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-[10px] font-bold text-black ring-2 ring-white/10">
-                  {session.user?.name?.charAt(0) || "U"}
+                  {user?.name?.charAt(0) || "U"}
                 </div>
               )}
-              <span className="text-xs font-medium hidden sm:block">{session.user?.name}</span>
+              <span className="text-xs font-medium hidden sm:block">{user?.name}</span>
             </Link>
           ) : (
             <div className="flex items-center gap-1.5">
               <button
-                onClick={() => signIn("google")}
+                onClick={() => signInWithGoogle()}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-gray-700 text-xs font-medium hover:bg-gray-100 transition shadow-sm"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24">
@@ -61,7 +61,7 @@ export default function Header() {
                 <span className="hidden sm:inline">{t.nav.login}</span>
               </button>
               <button
-                onClick={() => window.location.href = "/api/auth/signin/tiktok"}
+                onClick={() => signInWithTikTok()}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black text-white text-xs font-medium hover:bg-gray-900 transition shadow-sm border border-white/10"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">

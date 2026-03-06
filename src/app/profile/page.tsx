@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/lib/auth";
 import { useLanguage } from "@/lib/LanguageContext";
 
 const ROLES = ["master", "admin", "photo", "makeup", "model", "guest"] as const;
@@ -34,7 +34,7 @@ interface Profile {
 }
 
 export default function ProfilePage() {
-  const { data: session } = useSession();
+  const { user: authUser } = useAuth();
   const { t } = useLanguage();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,9 +43,7 @@ export default function ProfilePage() {
     role: "guest", bio: "", phone: "", cameraBodies: [""], lenses: [""], birthYear: "",
   });
 
-  const currentUserId = session?.user
-    ? (session.user as Record<string, unknown>).id as string || session.user.name || ""
-    : "";
+  const currentUserId = authUser?.id || "";
 
   useEffect(() => {
     if (!currentUserId) { setLoading(false); return; }
@@ -78,8 +76,8 @@ export default function ProfilePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId: currentUserId,
-          userName: session?.user?.name || "Anonymous",
-          userImage: session?.user?.image || null,
+          userName: authUser?.name || "Anonymous",
+          userImage: authUser?.image || null,
           role: form.role,
           bio: form.bio,
           phone: form.phone,
@@ -118,21 +116,21 @@ export default function ProfilePage() {
           <form onSubmit={handleSave} className="space-y-6">
             {/* User info preview */}
             <div className="p-5 rounded-2xl border border-white/[0.08] bg-[var(--bg-card)] flex items-center gap-4">
-              {session?.user?.image ? (
-                <img src={session.user.image} alt="" className="w-14 h-14 rounded-full ring-2 ring-white/10" referrerPolicy="no-referrer" />
+              {authUser?.image ? (
+                <img src={authUser.image!} alt="" className="w-14 h-14 rounded-full ring-2 ring-white/10" referrerPolicy="no-referrer" />
               ) : (
                 <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-xl font-bold text-black">
-                  {(session?.user?.name || "?").charAt(0)}
+                  {(authUser?.name || "?").charAt(0)}
                 </div>
               )}
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold">{session?.user?.name}</span>
+                  <span className="font-semibold">{authUser?.name}</span>
                   {profile?.role && (
                     <span className={`inline-block w-2.5 h-2.5 rounded-full animate-pulse shadow-lg ${ROLE_BADGE_COLORS[profile.role] || ROLE_BADGE_COLORS.guest}`} />
                   )}
                 </div>
-                <p className="text-xs text-[var(--text-secondary)]">{session?.user?.email}</p>
+                <p className="text-xs text-[var(--text-secondary)]">{authUser?.email}</p>
                 {profile?.role && (
                   <span className={`inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold text-black bg-gradient-to-r ${ROLE_COLORS[profile.role] || ROLE_COLORS.guest}`}>
                     {t.profile.roles[profile.role as keyof typeof t.profile.roles]}

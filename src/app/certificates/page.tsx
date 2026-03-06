@@ -1,13 +1,13 @@
 "use client";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import { isCourseComplete } from "@/lib/progress";
 import { useCourses } from "@/hooks/useCourses";
 import { useLanguage } from "@/lib/LanguageContext";
 
 export default function CertificatesPage() {
-  const { data: session } = useSession();
+  const { user: authUser } = useAuth();
   const { t } = useLanguage();
   const { courses } = useCourses();
   const [completedCourses, setCompletedCourses] = useState<Record<string, boolean>>({});
@@ -86,7 +86,7 @@ export default function CertificatesPage() {
 
                           <p className="text-sm text-[var(--text-secondary)] mb-3">{t.cert.certFor}</p>
                           <h3 className="text-3xl md:text-4xl font-bold mb-3" style={{ color: course.color }}>
-                            {session?.user?.name || t.cert.student}
+                            {authUser?.name || t.cert.student}
                           </h3>
                           <div className="w-48 h-px mx-auto mb-8" style={{ background: `linear-gradient(90deg, transparent, ${course.color}60, transparent)` }} />
 

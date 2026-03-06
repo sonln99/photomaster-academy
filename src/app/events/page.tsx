@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/lib/auth";
 import { useLanguage } from "@/lib/LanguageContext";
 import { supabase } from "@/lib/supabase";
 
@@ -29,7 +29,7 @@ interface Vote {
 }
 
 export default function EventsPage() {
-  const { data: session } = useSession();
+  const { user: authUser } = useAuth();
   const { t } = useLanguage();
   const [events, setEvents] = useState<Event[]>([]);
   const [votes, setVotes] = useState<Record<string, Vote[]>>({});
@@ -42,9 +42,7 @@ export default function EventsPage() {
     conceptName: "", description: "", date: "", location: "", type: "free" as "free" | "paid", price: "", qrImage: "",
   });
 
-  const currentUserId = session?.user
-    ? (session.user as Record<string, unknown>).id as string || session.user.name || ""
-    : "";
+  const currentUserId = authUser?.id || "";
 
   useEffect(() => {
     fetch("/api/events")
@@ -118,8 +116,8 @@ export default function EventsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           eventId, userId: currentUserId,
-          userName: session?.user?.name || "Anonymous",
-          userImage: session?.user?.image || null,
+          userName: authUser?.name || "Anonymous",
+          userImage: authUser?.image || null,
         }),
       });
       loadVotes(eventId);

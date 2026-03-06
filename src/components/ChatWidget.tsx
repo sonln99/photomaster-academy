@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/lib/auth";
 import { useLanguage } from "@/lib/LanguageContext";
 import { supabase } from "@/lib/supabase";
 
@@ -262,14 +262,12 @@ export function ChatPanel({ isDesktop, onClose, currentUserId, userName, userIma
 }
 
 export default function ChatWidget() {
-  const { data: session } = useSession();
+  const { user } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const currentUserId = session?.user
-    ? (session.user as Record<string, unknown>).id as string || session.user.name || ""
-    : "";
-  const userName = session?.user?.name || "Anonymous";
-  const userImage = session?.user?.image || null;
+  const currentUserId = user?.id || "";
+  const userName = user?.name || "Anonymous";
+  const userImage = user?.image || null;
 
   const handleMobileToggle = useCallback(() => {
     setMobileOpen((prev) => !prev);

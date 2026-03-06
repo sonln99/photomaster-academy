@@ -1,29 +1,27 @@
 "use client";
-import { SessionProvider, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { setUserId, loadProgressFromCloud, uploadProgressToCloud } from "@/lib/progress";
 import { ChatPanel } from "@/components/ChatWidget";
 import { useLanguage } from "@/lib/LanguageContext";
-import { signIn, signOut } from "next-auth/react";
+import { useAuth, AuthProvider as SupabaseAuthProvider } from "@/lib/auth";
 import Link from "next/link";
 import Header from "@/components/Header";
 
 function SyncProgress() {
-  const { data: session } = useSession();
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (session?.user) {
-      const id = (session.user as Record<string, unknown>).id as string || session.user.name || "anonymous";
-      setUserId(id);
+    if (user) {
+      setUserId(user.id);
 
       fetch("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id,
-          name: session.user.name,
-          image: session.user.image,
-          provider: (session.user as Record<string, unknown>).provider as string || "google",
+          id: user.id,
+          name: user.name,
+          image: user.image,
+          provider: user.provider,
         }),
       }).catch(() => {});
 
@@ -31,7 +29,7 @@ function SyncProgress() {
     } else {
       setUserId(null);
     }
-  }, [session]);
+  }, [user]);
 
   return null;
 }
@@ -44,21 +42,17 @@ interface LeaderboardUser {
 }
 
 function LeftSidebar() {
-  const { data: session } = useSession();
+  const { user, signOut } = useAuth();
   const { t } = useLanguage();
   const [userRole, setUserRole] = useState<string | null>(null);
 
-  const currentUserId = session?.user
-    ? (session.user as Record<string, unknown>).id as string || session.user.name || ""
-    : "";
-
   useEffect(() => {
-    if (!currentUserId) return;
-    fetch(`/api/profile?userId=${currentUserId}`)
+    if (!user?.id) return;
+    fetch(`/api/profile?userId=${user.id}`)
       .then((r) => r.json())
       .then((d) => { if (d?.role) setUserRole(d.role); })
       .catch(() => {});
-  }, [currentUserId]);
+  }, [user?.id]);
 
   const ROLE_LABELS: Record<string, string> = {
     master: "Master", admin: "Admin", photo: "Photographer", makeup: "Makeup", model: "Model", guest: "Guest",
@@ -81,18 +75,18 @@ function LeftSidebar() {
   return (
     <aside className="hidden lg:flex flex-col w-[240px] shrink-0 h-[calc(100vh-3.5rem)] sticky top-14 overflow-y-auto border-r border-white/[0.06] px-3 py-4 scrollbar-thin">
       {/* User card */}
-      {session ? (
+      {user ? (
         <div className="mb-4 p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
           <div className="flex items-center gap-3 mb-2">
-            {session.user?.image ? (
-              <img src={session.user.image} alt="" className="w-10 h-10 rounded-full ring-2 ring-white/10" />
+            {user.image ? (
+              <img src={user.image} alt="" className="w-10 h-10 rounded-full ring-2 ring-white/10" referrerPolicy="no-referrer" />
             ) : (
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-sm font-bold text-black">
-                {session.user?.name?.charAt(0) || "U"}
+                {user.name?.charAt(0) || "U"}
               </div>
             )}
             <div className="min-w-0">
-              <p className="text-sm font-semibold truncate">{session.user?.name}</p>
+              <p className="text-sm font-semibold truncate">{user.name}</p>
               {userRole && userRole !== "guest" && (
                 <span className="text-[10px] text-amber-400 font-medium">{ROLE_LABELS[userRole] || userRole}</span>
               )}
@@ -144,7 +138,7 @@ function LeftSidebar() {
       </nav>
 
       {/* Bottom actions */}
-      {session && (
+      {user && (
         <div className="pt-3 border-t border-white/[0.06] mt-3 space-y-0.5">
           <Link href="/certificates"
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/[0.04] transition">
@@ -167,15 +161,13 @@ function LeftSidebar() {
 }
 
 function RightSidebar() {
-  const { data: session } = useSession();
+  const { user } = useAuth();
   const { t } = useLanguage();
   const [leaders, setLeaders] = useState<LeaderboardUser[]>([]);
 
-  const currentUserId = session?.user
-    ? (session.user as Record<string, unknown>).id as string || session.user.name || ""
-    : "";
-  const userName = session?.user?.name || "Anonymous";
-  const userImage = session?.user?.image || null;
+  const currentUserId = user?.id || "";
+  const userName = user?.name || "Anonymous";
+  const userImage = user?.image || null;
 
   useEffect(() => {
     fetch("/api/leaderboard")
@@ -193,19 +185,19 @@ function RightSidebar() {
           <Link href="/leaderboard" className="text-[10px] text-amber-400 hover:underline">{t.home.viewAllNews}</Link>
         </div>
         <div className="space-y-0.5">
-          {leaders.map((user, i) => (
-            <div key={user.id} className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-white/[0.04] transition">
+          {leaders.map((u, i) => (
+            <div key={u.id} className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-white/[0.04] transition">
               <div className="relative shrink-0">
-                {user.image ? (
-                  <img src={user.image} alt="" className="w-7 h-7 rounded-full" referrerPolicy="no-referrer" />
+                {u.image ? (
+                  <img src={u.image} alt="" className="w-7 h-7 rounded-full" referrerPolicy="no-referrer" />
                 ) : (
                   <div className="w-7 h-7 rounded-full bg-amber-500/20 flex items-center justify-center text-[10px] font-bold text-amber-400">
-                    {(user.name || "?").charAt(0).toUpperCase()}
+                    {(u.name || "?").charAt(0).toUpperCase()}
                   </div>
                 )}
                 <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-[var(--bg-primary)]" />
               </div>
-              <span className="text-xs flex-1 truncate">{user.name}</span>
+              <span className="text-xs flex-1 truncate">{u.name}</span>
               <span className="text-[9px] text-[var(--text-secondary)]">#{i + 1}</span>
             </div>
           ))}
@@ -220,9 +212,9 @@ function RightSidebar() {
   );
 }
 
-export default function AuthProvider({ children }: { children: React.ReactNode }) {
+export default function AuthProviderWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <SessionProvider>
+    <SupabaseAuthProvider>
       <SyncProgress />
       <Header />
       <div className="flex pt-14">
@@ -232,6 +224,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         </main>
         <RightSidebar />
       </div>
-    </SessionProvider>
+    </SupabaseAuthProvider>
   );
 }
