@@ -26,9 +26,9 @@ export default function CourseCard({ course }: { course: Course }) {
   }, [course.id, course.lessons.length]);
 
   return (
-    <Link href={`/courses/${course.id}`}>
+    <Link href={`/courses/${course.id}`} className="h-full">
       <div
-        className="group relative rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 sm:p-7 hover:border-white/10 transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden"
+        className="group relative rounded-2xl bg-[var(--bg-card)] p-6 sm:p-7 transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden h-full"
       >
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -53,8 +53,8 @@ export default function CourseCard({ course }: { course: Course }) {
             </span>
           </div>
 
-          <h3 className="text-xl font-bold mb-1.5" style={{ color: course.color }}>{course.title}</h3>
-          <p className="text-[var(--text-secondary)] text-sm mb-5 leading-relaxed">{course.description}</p>
+          <h3 className="text-xl font-bold mb-1.5 line-clamp-1" style={{ color: course.color }}>{course.title}</h3>
+          <p className="text-[var(--text-secondary)] text-sm mb-5 leading-relaxed line-clamp-2 min-h-[2.5rem]">{course.description}</p>
 
           <div className="flex items-center gap-4 mb-5 text-xs text-[var(--text-secondary)]">
             <span className="flex items-center gap-1.5">
@@ -71,20 +71,18 @@ export default function CourseCard({ course }: { course: Course }) {
             </span>
           </div>
 
-          {progress > 0 && (
-            <div className="mb-4">
-              <div className="flex justify-between text-xs mb-1.5">
-                <span className="text-[var(--text-secondary)]">{t.card.progress}</span>
-                <span className="font-semibold" style={{ color: course.color }}>{progress}%</span>
-              </div>
-              <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-700"
-                  style={{ width: `${progress}%`, background: `linear-gradient(90deg, ${course.color}, ${course.color}cc)` }}
-                />
-              </div>
+          <div className="mb-4">
+            <div className="flex justify-between text-xs mb-1.5">
+              <span className="text-[var(--text-secondary)]">{t.card.progress}</span>
+              <span className="font-semibold" style={{ color: course.color }}>{progress}%</span>
             </div>
-          )}
+            <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-700"
+                style={{ width: `${progress}%`, background: `linear-gradient(90deg, ${course.color}, ${course.color}cc)` }}
+              />
+            </div>
+          </div>
 
           <div className="flex items-center gap-2 text-sm font-semibold group-hover:gap-3 transition-all duration-300" style={{ color: course.color }}>
             {progress > 0 ? t.card.continue : t.card.start}

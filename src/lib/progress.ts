@@ -132,6 +132,21 @@ export function markLessonComplete(courseId: string, lessonId: string) {
   }
   saveProgress(progress);
   syncToSupabase(courseId, lessonId, progress.quizScores[key]);
+
+  // Cập nhật user stats
+  const userId = getUserId();
+  if (userId) {
+    fetch("/api/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId,
+        lastCourseId: courseId,
+        lastLessonId: lessonId,
+        addScore: progress.quizScores[key] || 0,
+      }),
+    }).catch(() => {});
+  }
 }
 
 export function isLessonComplete(courseId: string, lessonId: string): boolean {

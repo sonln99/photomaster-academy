@@ -16,7 +16,6 @@ export default function Quiz({ questions, onComplete }: QuizProps) {
   const [selected, setSelected] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
-  const [finished, setFinished] = useState(false);
 
   const question = questions[currentQ];
 
@@ -35,42 +34,9 @@ export default function Quiz({ questions, onComplete }: QuizProps) {
       setSelected(null);
       setShowResult(false);
     } else {
-      setFinished(true);
-      onComplete(score);
+      const finalScore = score + (selected === question.correctIndex ? 0 : 0);
+      onComplete(finalScore);
     }
-  }
-
-  if (finished) {
-    const percentage = Math.round((score / questions.length) * 100);
-    const isGreat = percentage >= 80;
-    const isOk = percentage >= 60;
-    return (
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-8 sm:p-10 text-center animate-fade-in-up">
-        <div className="relative w-28 h-28 mx-auto mb-5">
-          <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="42" fill="none" stroke="var(--border)" strokeWidth="6" />
-            <circle
-              cx="50" cy="50" r="42" fill="none"
-              stroke={isGreat ? "#22c55e" : isOk ? "#f59e0b" : "#ef4444"}
-              strokeWidth="6" strokeLinecap="round"
-              strokeDasharray={`${percentage * 2.64} 264`}
-              className="transition-all duration-1000"
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-3xl font-bold" style={{ color: isGreat ? "#22c55e" : isOk ? "#f59e0b" : "#ef4444" }}>
-              {percentage}%
-            </span>
-          </div>
-        </div>
-        <p className="text-lg font-semibold mb-1">
-          {score}/{questions.length} {t.quiz.correct}
-        </p>
-        <p className="text-sm text-[var(--text-secondary)] max-w-xs mx-auto">
-          {isGreat ? t.quiz.great : isOk ? t.quiz.ok : t.quiz.fail}
-        </p>
-      </div>
-    );
   }
 
   return (

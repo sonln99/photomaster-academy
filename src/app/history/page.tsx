@@ -1,31 +1,37 @@
 "use client";
-import Header from "@/components/Header";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getLearningHistory, getCourseProgress, type HistoryEntry } from "@/lib/progress";
-import { courses, getLesson } from "@/data/courses";
+import { useCourses } from "@/hooks/useCourses";
 import { useLanguage } from "@/lib/LanguageContext";
 
 export default function HistoryPage() {
   const { t } = useLanguage();
+  const { courses } = useCourses();
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [progressMap, setProgressMap] = useState<Record<string, number>>({});
 
   useEffect(() => {
+    if (courses.length === 0) return;
     setHistory(getLearningHistory());
     const pm: Record<string, number> = {};
     courses.forEach((c) => {
       pm[c.id] = getCourseProgress(c.id, c.lessons.length);
     });
     setProgressMap(pm);
-  }, []);
+  }, [courses]);
 
   const courseColorMap: Record<string, string> = {};
   courses.forEach((c) => { courseColorMap[c.id] = c.color; });
 
+  const findLesson = (courseId: string, lessonId: string) => {
+    const course = courses.find((c) => c.id === courseId);
+    return course?.lessons.find((l) => l.id === lessonId);
+  };
+
   return (
     <>
-      <Header />
+      
       <main className="pt-24 max-w-4xl mx-auto px-4 pb-20">
         <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)] mb-8 animate-fade-in">
           <Link href="/" className="hover:text-[var(--text-primary)] transition">{t.coursePage.home}</Link>
@@ -92,7 +98,7 @@ export default function HistoryPage() {
         ) : (
           <div className="space-y-3 stagger-children">
             {history.map((entry, i) => {
-              const lesson = getLesson(entry.courseId, entry.lessonId);
+              const lesson = findLesson(entry.courseId, entry.lessonId);
               const color = courseColorMap[entry.courseId] || "#f59e0b";
               const date = new Date(entry.completedAt);
               return (

@@ -1,15 +1,15 @@
 "use client";
-import Header from "@/components/Header";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { isCourseComplete } from "@/lib/progress";
-import { courses } from "@/data/courses";
+import { useCourses } from "@/hooks/useCourses";
 import { useLanguage } from "@/lib/LanguageContext";
 
 export default function CertificatesPage() {
   const { data: session } = useSession();
   const { t } = useLanguage();
+  const { courses } = useCourses();
   const [completedCourses, setCompletedCourses] = useState<Record<string, boolean>>({});
 
   const levelLabels: Record<string, string> = {
@@ -34,7 +34,7 @@ export default function CertificatesPage() {
 
   return (
     <>
-      <Header />
+      
       <main className="pt-24 max-w-5xl mx-auto px-4 pb-20">
         <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)] mb-8 animate-fade-in">
           <Link href="/" className="hover:text-[var(--text-primary)] transition">{t.coursePage.home}</Link>

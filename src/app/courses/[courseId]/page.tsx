@@ -1,15 +1,14 @@
 "use client";
 import { use } from "react";
 import Link from "next/link";
-import Header from "@/components/Header";
-import { getCourse } from "@/data/courses";
 import { useEffect, useState } from "react";
 import { isLessonComplete, getCourseProgress } from "@/lib/progress";
 import { useLanguage } from "@/lib/LanguageContext";
+import { useCourse } from "@/hooks/useCourses";
 
 export default function CoursePage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = use(params);
-  const course = getCourse(courseId);
+  const { course, loading: courseLoading } = useCourse(courseId);
   const { t } = useLanguage();
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
   const [progress, setProgress] = useState(0);
@@ -27,7 +26,7 @@ export default function CoursePage({ params }: { params: Promise<{ courseId: str
   if (!course) {
     return (
       <>
-        <Header />
+        
         <main className="pt-24 text-center">
           <p className="text-[var(--text-secondary)]">{t.coursePage.notFound}</p>
           <Link href="/" className="text-[var(--accent-gold)] text-sm mt-4 inline-block">{t.coursePage.backHome}</Link>
@@ -40,7 +39,7 @@ export default function CoursePage({ params }: { params: Promise<{ courseId: str
 
   return (
     <>
-      <Header />
+      
       <main className="pt-24 max-w-4xl mx-auto px-4 pb-20">
         <div className="flex items-center gap-2 text-sm text-[var(--text-secondary)] mb-8 animate-fade-in">
           <Link href="/" className="hover:text-[var(--text-primary)] transition">{t.coursePage.home}</Link>

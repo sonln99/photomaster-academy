@@ -16,9 +16,9 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body className="antialiased">
-        <AuthProvider>
-          <LanguageProvider>{children}</LanguageProvider>
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

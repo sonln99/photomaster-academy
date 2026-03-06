@@ -1,214 +1,309 @@
 "use client";
-import Header from "@/components/Header";
-import CourseCard from "@/components/CourseCard";
-import { courses } from "@/data/courses";
 import { useLanguage } from "@/lib/LanguageContext";
+import Link from "next/link";
+import { useState, useEffect, useRef, useCallback } from "react";
 
-const statIcons = [
-  "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253",
-  "M13 10V3L4 14h7v7l9-11h-7z",
-  "M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01",
-  "M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z",
-];
+interface TikTokVideo {
+  video_id: string;
+  title: string;
+  description: string;
+  thumbnail_url: string;
+  cover_url: string;
+  share_url: string;
+  tiktok_username: string;
+  author_name: string;
+  author_image: string | null;
+  play_count: number;
+}
 
-const featureIcons = [
-  "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z",
-  "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
-  "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z",
-];
+interface TikTokMember {
+  tiktok_username: string;
+  name: string | null;
+  image: string | null;
+  follower_count: number;
+  heart_count: number;
+}
+
+interface CommunityItem {
+  id: string;
+  title: string;
+  date: string;
+  location: string;
+  type: "event" | "job";
+  status: string;
+  price: string | null;
+  created_at: string;
+}
+
+function formatCount(n: number) {
+  if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}K`;
+  return n.toString();
+}
 
 export default function Home() {
   const { t } = useLanguage();
+  const [allVideos, setAllVideos] = useState<TikTokVideo[]>([]);
+  const [videos, setVideos] = useState<TikTokVideo[]>([]);
+  const [members, setMembers] = useState<TikTokMember[]>([]);
+  const [community, setCommunity] = useState<CommunityItem[]>([]);
+  const [hasMore, setHasMore] = useState(false);
+  const PAGE_SIZE = 1000;
+  const loaderRef = useRef<HTMLDivElement>(null);
 
-  const stats = [
-    { value: "27", label: t.home.lessons, icon: statIcons[0] },
-    { value: "3", label: t.home.levels, icon: statIcons[1] },
-    { value: "120+", label: t.home.quizzes, icon: statIcons[2] },
-    { value: "40+", label: t.home.exercises, icon: statIcons[3] },
-  ];
+  useEffect(() => {
+    fetch("/api/tiktok-videos")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.videos) {
+          setAllVideos(d.videos);
+          setVideos(d.videos.slice(0, PAGE_SIZE));
+          setHasMore(d.videos.length > PAGE_SIZE);
+        }
+        if (d.members) setMembers(d.members);
+      })
+      .catch(() => {});
+    Promise.all([
+      fetch("/api/events").then((r) => r.json()).catch(() => []),
+      fetch("/api/jobs").then((r) => r.json()).catch(() => []),
+    ]).then(([events, jobs]) => {
+      const items: CommunityItem[] = [
+        ...(Array.isArray(events) ? events.map((e: Record<string, unknown>) => ({
+          id: e.id as string, title: e.concept_name as string, date: e.date as string,
+          location: e.location as string, type: "event" as const, status: e.status as string,
+          price: (e.type === "paid" ? e.price : null) as string | null, created_at: e.created_at as string,
+        })) : []),
+        ...(Array.isArray(jobs) ? jobs.map((j: Record<string, unknown>) => ({
+          id: j.id as string, title: j.title as string, date: j.date as string,
+          location: j.location as string, type: "job" as const, status: j.status as string,
+          price: j.price as string | null, created_at: j.created_at as string,
+        })) : []),
+      ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 10);
+      setCommunity(items);
+    });
+  }, []);
 
-  const features = [
-    { title: t.home.feature1Title, desc: t.home.feature1Desc, icon: featureIcons[0] },
-    { title: t.home.feature2Title, desc: t.home.feature2Desc, icon: featureIcons[1] },
-    { title: t.home.feature3Title, desc: t.home.feature3Desc, icon: featureIcons[2] },
-  ];
+  const loadMore = useCallback(() => {
+    setVideos((prev) => {
+      const next = allVideos.slice(0, prev.length + PAGE_SIZE);
+      setHasMore(next.length < allVideos.length);
+      return next;
+    });
+  }, [allVideos]);
+
+  useEffect(() => {
+    if (!loaderRef.current || !hasMore) return;
+    const observer = new IntersectionObserver(
+      (entries) => { if (entries[0].isIntersecting) loadMore(); },
+      { threshold: 0.1 }
+    );
+    observer.observe(loaderRef.current);
+    return () => observer.disconnect();
+  }, [hasMore, loadMore]);
+
+  const rankedMembers = [...members].sort((a, b) =>
+    (b.follower_count - a.follower_count) || (b.heart_count - a.heart_count)
+  );
 
   return (
-    <>
-      <Header />
-      <main className="pt-16">
-        {/* Hero */}
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0">
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/[0.07] rounded-full blur-3xl" />
-            <div className="absolute top-20 right-1/4 w-72 h-72 bg-orange-500/[0.05] rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent" />
-          </div>
-
-          <div className="max-w-5xl mx-auto px-4 py-24 md:py-32 text-center relative">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-500/20 bg-amber-500/[0.06] text-xs text-amber-400 mb-8 animate-fade-in">
-              <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-              <span dangerouslySetInnerHTML={{ __html: t.home.badge }} />
-            </div>
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 leading-[1.1] animate-fade-in-up">
-              {t.home.heroTitle1}{" "}
-              <span className="gradient-text-gold">
-                {t.home.heroTitle2}
-              </span>
-            </h1>
-            <p className="text-base sm:text-lg text-[var(--text-secondary)] max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up" style={{ animationDelay: "100ms" }}>
-              {t.home.heroDesc}
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-3 animate-fade-in-up" style={{ animationDelay: "200ms" }}>
-              <a
-                href="#courses"
-                className="group px-8 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 text-black font-semibold text-sm hover:opacity-90 transition shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 flex items-center justify-center gap-2"
-              >
-                {t.home.startNow}
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 transition-transform">
-                  <polyline points="9 18 15 12 9 6"/>
+    <div className="px-4 py-6 space-y-4">
+      {/* Community - Events + Jobs table */}
+      {community.length > 0 && (
+        <section className="border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06]">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                 </svg>
-              </a>
-              <a
-                href="#roadmap"
-                className="px-8 py-3.5 rounded-xl border border-[var(--border)] text-sm hover:bg-white/[0.04] hover:border-white/10 transition flex items-center justify-center gap-2"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 18l6-6-6-6"/>
+              </div>
+              <h2 className="font-bold text-sm">{t.nav.community}</h2>
+            </div>
+            <Link href="/community" className="text-[10px] text-amber-400 hover:underline">{t.home.viewAllNews}</Link>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-white/[0.06] text-[var(--text-secondary)]">
+                  <th className="text-left px-4 py-2.5 font-medium w-20">Type</th>
+                  <th className="text-left px-2 py-2.5 font-medium">{t.jobs.titleLabel}</th>
+                  <th className="text-left px-2 py-2.5 font-medium hidden sm:table-cell">{t.events.locationLabel}</th>
+                  <th className="text-left px-2 py-2.5 font-medium hidden sm:table-cell">{t.events.dateLabel}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {community.map((item) => (
+                  <tr key={item.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition cursor-pointer"
+                    onClick={() => window.location.href = `/community?tab=${item.type === "event" ? "events" : "jobs"}`}>
+                    <td className="px-4 py-2.5">
+                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold whitespace-nowrap ${
+                        item.type === "event" ? "bg-blue-500/15 text-blue-400" : "bg-amber-500/15 text-amber-400"
+                      }`}>
+                        {item.type === "event" ? t.events.title.split(" ")[0] : t.jobs.title.split(" ")[0]}
+                      </span>
+                    </td>
+                    <td className="px-2 py-2.5">
+                      <span className="line-clamp-1 font-medium">{item.title}</span>
+                      {item.price && <span className="text-[9px] text-amber-400 ml-1">{item.price}</span>}
+                    </td>
+                    <td className="px-2 py-2.5 text-[var(--text-secondary)] hidden sm:table-cell">
+                      <span className="line-clamp-1">{item.location}</span>
+                    </td>
+                    <td className="px-2 py-2.5 text-[var(--text-secondary)] hidden sm:table-cell whitespace-nowrap">
+                      {new Date(item.date).toLocaleDateString("vi", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      {/* Two-column layout: Leaderboard + Videos */}
+      <div className="flex flex-col lg:flex-row gap-4">
+        {/* Leaderboard sidebar */}
+        {rankedMembers.length > 0 && (
+          <section className="lg:w-80 shrink-0">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-lg bg-pink-500/10 flex items-center justify-center">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#ec4899">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.8a8.28 8.28 0 0 0 4.76 1.5v-3.4a4.85 4.85 0 0 1-1-.21z"/>
                 </svg>
-                {t.home.viewRoadmap}
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* Stats */}
-        <section className="max-w-5xl mx-auto px-4 mb-20">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 stagger-children">
-            {stats.map((stat) => (
-              <div key={stat.label} className="group text-center p-5 sm:p-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-white/10 hover:bg-[var(--bg-hover)] transition-all duration-300">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d={stat.icon} />
-                  </svg>
-                </div>
-                <div className="text-2xl sm:text-3xl font-bold text-[var(--accent-gold)] mb-0.5">{stat.value}</div>
-                <div className="text-xs text-[var(--text-secondary)]">{stat.label}</div>
               </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Courses */}
-        <section id="courses" className="max-w-5xl mx-auto px-4 mb-20">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-1">{t.home.chooseLevelTitle}</h2>
-              <p className="text-sm text-[var(--text-secondary)]">{t.home.chooseLevelDesc}</p>
+              <h2 className="font-bold text-sm">{t.leaderboard.title}</h2>
+              <Link href="/leaderboard" className="text-[10px] text-pink-400 hover:underline ml-auto">Xem t&#7845;t c&#7843;</Link>
             </div>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4 sm:gap-5 stagger-children">
-            {courses.map((course) => (
-              <CourseCard key={course.id} course={course} />
-            ))}
-          </div>
-        </section>
-
-        {/* Features */}
-        <section className="max-w-5xl mx-auto px-4 mb-20">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t.home.whyTitle}</h2>
-            <p className="text-sm text-[var(--text-secondary)]">{t.home.whyDesc}</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4 sm:gap-5 stagger-children">
-            {features.map((feature) => (
-              <div key={feature.title} className="group p-6 rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] hover:border-white/10 transition-all duration-300">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/15 to-orange-500/15 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d={feature.icon} />
-                  </svg>
-                </div>
-                <h3 className="font-semibold mb-2">{feature.title}</h3>
-                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Roadmap */}
-        <section id="roadmap" className="max-w-5xl mx-auto px-4 mb-24">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t.home.roadmapTitle}</h2>
-            <p className="text-sm text-[var(--text-secondary)]">{t.home.roadmapDesc}</p>
-          </div>
-          <div className="relative">
-            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-[var(--accent-beginner)] via-[var(--accent-professional)] to-[var(--accent-pro)]" />
-            <div className="space-y-6 stagger-children">
-              {courses.map((course, ci) => (
-                <div key={course.id} className="relative">
-                  <div className="hidden md:flex absolute left-1/2 top-6 -translate-x-1/2 w-4 h-4 rounded-full border-2 z-10" style={{ borderColor: course.color, backgroundColor: `${course.color}30` }} />
-                  <div
-                    className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 hover:border-white/10 transition-all duration-300"
-                    style={{ borderLeftColor: course.color, borderLeftWidth: "3px" }}
+            <div className="border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden sticky" style={{ top: "3.5rem" }}>
+              <div className="overflow-y-auto" style={{ maxHeight: "calc(100vh - 3.5rem)" }}>
+                {rankedMembers.map((m, i) => (
+                  <a
+                    key={m.tiktok_username}
+                    href={`https://www.tiktok.com/@${m.tiktok_username}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.03] transition border-b border-white/[0.04] last:border-0"
                   >
-                    <div className="flex items-center gap-3 mb-4">
-                      <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold"
-                        style={{ backgroundColor: `${course.color}15`, color: course.color }}
-                      >
-                        {ci + 1}
-                      </div>
-                      <div>
-                        <h3 className="font-bold" style={{ color: course.color }}>{course.title}</h3>
-                        <p className="text-xs text-[var(--text-secondary)]">{course.lessons.length} {t.card.lessonCount}</p>
-                      </div>
+                    {/* Rank */}
+                    <div className="w-6 text-center shrink-0">
+                      {i < 3 ? (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill={i === 0 ? "#FFD700" : i === 1 ? "#C0C0C0" : "#CD7F32"}>
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                      ) : (
+                        <span className="text-[11px] text-[var(--text-secondary)] font-medium">{i + 1}</span>
+                      )}
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 ml-13">
-                      {course.lessons.map((lesson) => (
-                        <div key={lesson.id} className="text-xs text-[var(--text-secondary)] flex items-center gap-2 py-1">
-                          <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: course.color, opacity: 0.6 }} />
-                          {lesson.title}
+
+                    {/* Avatar */}
+                    <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-white/[0.06]">
+                      {m.image ? (
+                        <img src={m.image} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-pink-400 to-red-500 text-[10px] font-bold text-white">
+                          {(m.name || m.tiktok_username).charAt(0).toUpperCase()}
                         </div>
-                      ))}
+                      )}
                     </div>
+
+                    {/* Name */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium truncate">{m.name || m.tiktok_username}</p>
+                      <p className="text-[10px] text-[var(--text-secondary)] truncate">@{m.tiktok_username}</p>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex items-center gap-3 shrink-0 text-[10px]">
+                      <div className="text-center">
+                        <div className="font-semibold text-pink-400">{formatCount(m.follower_count)}</div>
+                        <div className="text-[var(--text-secondary)]">followers</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="font-semibold text-red-400">{formatCount(m.heart_count)}</div>
+                        <div className="text-[var(--text-secondary)]">hearts</div>
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* TikTok Videos grid */}
+        <section className="flex-1 min-w-0">
+          <div className="flex items-center gap-2.5 mb-3">
+            <h2 className="font-bold text-base">{t.posts.title}</h2>
+            <span className="text-xs text-[var(--text-secondary)]">({allVideos.length} videos)</span>
+          </div>
+          {videos.length > 0 ? (
+            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2">
+              {videos.map((video) => (
+                <a
+                  key={video.video_id}
+                  href={video.share_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden hover:border-white/10 hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  <div className="relative aspect-[9/16] bg-white/[0.04] overflow-hidden">
+                    {video.thumbnail_url ? (
+                      <img
+                        src={video.thumbnail_url}
+                        alt={video.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                          <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                      </div>
+                    )}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
+                      <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#000" stroke="none">
+                          <polygon points="6 3 20 12 6 21 6 3"/>
+                        </svg>
+                      </div>
+                    </div>
+                    {video.play_count > 0 && (
+                      <div className="absolute bottom-1.5 left-1.5 flex items-center gap-1 px-1.5 py-0.5 rounded bg-black/60 text-[9px] text-white">
+                        <svg width="8" height="8" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        {video.play_count >= 1000000 ? `${(video.play_count / 1000000).toFixed(1)}M` : video.play_count >= 1000 ? `${(video.play_count / 1000).toFixed(1)}K` : video.play_count}
+                      </div>
+                    )}
                   </div>
-                </div>
+                  <div className="p-2">
+                    <div className="flex items-center gap-1.5">
+                      {video.author_image ? (
+                        <img src={video.author_image} alt="" className="w-4 h-4 rounded-full shrink-0" referrerPolicy="no-referrer" />
+                      ) : (
+                        <div className="w-4 h-4 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-[7px] font-bold text-black shrink-0">
+                          {video.author_name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <span className="text-[9px] text-[var(--text-secondary)] truncate">@{video.tiktok_username}</span>
+                    </div>
+                    {video.title && (
+                      <p className="text-[10px] line-clamp-1 leading-relaxed mt-1">{video.title}</p>
+                    )}
+                  </div>
+                </a>
               ))}
             </div>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="relative border-t border-[var(--border)]">
-          <div className="absolute inset-0 bg-gradient-to-t from-amber-500/[0.03] to-transparent" />
-          <div className="relative max-w-5xl mx-auto px-4 py-12">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 flex items-center justify-center">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="3"/>
-                    <path d="M3 9a2 2 0 0 1 2-2h.93a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 10.07 4h3.86a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 18.07 7H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-bold text-sm">PhotoMaster Academy</p>
-                  <p className="text-xs text-[var(--text-secondary)]">{t.home.footerDesc}</p>
-                </div>
-              </div>
-
-              <p className="text-xl sm:text-2xl font-bold gradient-text-gold tracking-tight">
-                {t.home.slogan}
-              </p>
-
-              <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)]">
-                <a href="#courses" className="hover:text-[var(--text-primary)] transition">{t.home.course}</a>
-                <a href="#roadmap" className="hover:text-[var(--text-primary)] transition">{t.home.roadmap}</a>
-                <span>&copy; 2026 PhotoMaster</span>
-              </div>
+          ) : members.length === 0 && allVideos.length === 0 ? (
+            <p className="text-xs text-[var(--text-secondary)] text-center py-8">{t.posts.empty}</p>
+          ) : null}
+          {hasMore && (
+            <div ref={loaderRef} className="flex justify-center py-6">
+              <div className="w-6 h-6 border-2 border-pink-500/30 border-t-pink-500 rounded-full animate-spin" />
             </div>
-          </div>
-        </footer>
-      </main>
-    </>
+          )}
+        </section>
+      </div>
+    </div>
   );
 }
