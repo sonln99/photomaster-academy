@@ -59,7 +59,10 @@
       "WebSearch",
       "Bash(node /tmp/test_profile.mjs)",
       "Bash(node /tmp/test_itemlist.mjs)",
-      "Bash(node /tmp/test_itemlist2.mjs)"
+      "Bash(node /tmp/test_itemlist2.mjs)",
+      "Bash(gh api repos/sonln99/photomaster-academy/deployments --jq '.[0:3] | .[] | \"\"\\\\\\(.id\\) \\\\\\(.environment\\) \\\\\\(.created_at\\) \\\\\\(.description // \"\"no desc\"\"\\)\"\"')",
+      "Bash(npx vercel ls)",
+      "Bash(npx vercel --prod --force)"
     ],
     "additionalDirectories": [
       "/Users/nosel/photomaster-academy/src/app/api/posts/[postId]",
