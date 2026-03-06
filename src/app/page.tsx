@@ -135,13 +135,18 @@ export default function Home() {
   return (
     <div className="h-full flex flex-col overflow-hidden">
       <div className="flex flex-1 min-h-0 gap-0">
-        {/* Leaderboard sidebar */}
+        {/* TikTok Members sidebar */}
         {rankedMembers.length > 0 && (
           <div className="w-80 shrink-0 flex flex-col border-r border-[var(--border)] hidden lg:flex">
             <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.06] bg-[var(--bg-card)] shrink-0">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#ec4899"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.8a8.28 8.28 0 0 0 4.76 1.5v-3.4a4.85 4.85 0 0 1-1-.21z"/></svg>
-              <h2 className="font-bold text-sm">{t.leaderboard.title}</h2>
-              <Link href="/leaderboard" className="text-[10px] text-pink-400 hover:underline ml-auto">Xem t&#7845;t c&#7843;</Link>
+              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-pink-500 to-red-500 flex items-center justify-center">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.8a8.28 8.28 0 0 0 4.76 1.5v-3.4a4.85 4.85 0 0 1-1-.21z"/></svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h2 className="font-bold text-sm leading-none">{t.leaderboard.title}</h2>
+                <p className="text-[9px] text-[var(--text-secondary)] mt-0.5">{rankedMembers.length} members</p>
+              </div>
+              <Link href="/leaderboard" className="text-[10px] text-pink-400 hover:underline">Xem t&#7845;t c&#7843;</Link>
             </div>
             <div className="flex-1 overflow-y-auto">
               {rankedMembers.map((m, i) => (
@@ -194,10 +199,10 @@ export default function Home() {
         {/* Main content area */}
         <div className="flex-1 min-w-0 flex flex-col">
           {/* Tab bar */}
-          <div className="flex items-center border-b border-white/[0.06] bg-[var(--bg-primary)] shrink-0">
+          <div className="flex items-center border-b border-white/[0.06] bg-[var(--bg-card)]/50 shrink-0">
             <button
               onClick={() => setActiveTab("members")}
-              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-all relative ${
+              className={`flex items-center gap-2 px-5 py-3 text-sm font-medium transition-all relative ${
                 activeTab === "members"
                   ? "text-pink-400"
                   : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
@@ -207,14 +212,17 @@ export default function Home() {
                 <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.8a8.28 8.28 0 0 0 4.76 1.5v-3.4a4.85 4.85 0 0 1-1-.21z"/>
               </svg>
               {t.posts.title}
-              <span className="text-[10px] opacity-60">({allVideos.length})</span>
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${activeTab === "members" ? "bg-pink-500/15 text-pink-400" : "bg-white/[0.06] text-[var(--text-secondary)]"}`}>{allVideos.length}</span>
               {activeTab === "members" && (
-                <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-pink-400 rounded-full" />
+                <div className="absolute bottom-0 left-3 right-3 h-0.5 bg-gradient-to-r from-pink-500 to-rose-400 rounded-full" />
               )}
             </button>
+
+            <div className="w-px h-5 bg-white/[0.06]" />
+
             <button
               onClick={() => { setActiveTab("trending"); setSelectedMember(null); }}
-              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-all relative ${
+              className={`flex items-center gap-2 px-5 py-3 text-sm font-medium transition-all relative ${
                 activeTab === "trending"
                   ? "text-amber-400"
                   : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
@@ -224,9 +232,9 @@ export default function Home() {
                 <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
               </svg>
               {t.trends.title}
-              <span className="text-[10px] opacity-60">({trends.length})</span>
+              <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${activeTab === "trending" ? "bg-amber-500/15 text-amber-400" : "bg-white/[0.06] text-[var(--text-secondary)]"}`}>{trends.length}</span>
               {activeTab === "trending" && (
-                <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-amber-400 rounded-full" />
+                <div className="absolute bottom-0 left-3 right-3 h-0.5 bg-gradient-to-r from-amber-500 to-orange-400 rounded-full" />
               )}
             </button>
 
@@ -268,7 +276,16 @@ export default function Home() {
               {activeTab === "members" ? (
                 <div ref={scrollRef} className="flex-1 overflow-y-auto">
                   {videos.length > 0 ? (
-                    <div className="grid gap-2 p-2 grid-cols-3 sm:grid-cols-4 lg:grid-cols-5">
+                    <>
+                    {/* Videos separator */}
+                    <div className="flex items-center gap-2 px-4 py-2">
+                      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+                      <span className="text-[9px] font-semibold text-[var(--text-secondary)] uppercase tracking-widest">
+                        {selectedMember ? `@${selectedMember}` : `${videos.length} videos`}
+                      </span>
+                      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+                    </div>
+                    <div className="grid gap-2 px-2 pb-2 grid-cols-3 sm:grid-cols-4 lg:grid-cols-5">
                       {videos.map((video) => (
                         <a
                           key={video.video_id}
@@ -315,6 +332,7 @@ export default function Home() {
                         </a>
                       ))}
                     </div>
+                    </>
                   ) : members.length === 0 && allVideos.length === 0 ? (
                     <p className="text-xs text-[var(--text-secondary)] text-center py-8">{t.posts.empty}</p>
                   ) : null}
@@ -347,6 +365,15 @@ export default function Home() {
                         </button>
                       );
                     })}
+                  </div>
+
+                  {/* Content separator */}
+                  <div className="flex items-center gap-2 px-4 py-2 shrink-0">
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+                    <span className="text-[9px] font-semibold text-[var(--text-secondary)] uppercase tracking-widest">
+                      {selectedHashtag ? `#${selectedHashtag}` : `${filteredTrends.length} hashtags`}
+                    </span>
+                    <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
                   </div>
 
                   {selectedHashtag && selectedTrend ? (
