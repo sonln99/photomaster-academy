@@ -55,7 +55,11 @@
       "Bash(node crawl_tiktok.mjs)",
       "Bash(curl -s -X POST \"https://api.supabase.com/v1/projects/ijcmtstcajtxuzcqsngf/database/query\" -H \"Authorization: Bearer sbp_9be459cca0140e4fbe081d5b466ad33518f9ea43\" -H \"Content-Type: application/json\" -d @/tmp/insert_remaining.json)",
       "Bash(curl -s -X POST \"https://api.supabase.com/v1/projects/ijcmtstcajtxuzcqsngf/database/query\" -H \"Authorization: Bearer sbp_9be459cca0140e4fbe081d5b466ad33518f9ea43\" -H \"Content-Type: application/json\" -d @/tmp/reset_members.json)",
-      "Bash(curl -s -X POST \"https://api.supabase.com/v1/projects/ijcmtstcajtxuzcqsngf/database/query\" -H \"Authorization: Bearer sbp_9be459cca0140e4fbe081d5b466ad33518f9ea43\" -H \"Content-Type: application/json\" -d @/tmp/alter_tables.json)"
+      "Bash(curl -s -X POST \"https://api.supabase.com/v1/projects/ijcmtstcajtxuzcqsngf/database/query\" -H \"Authorization: Bearer sbp_9be459cca0140e4fbe081d5b466ad33518f9ea43\" -H \"Content-Type: application/json\" -d @/tmp/alter_tables.json)",
+      "WebSearch",
+      "Bash(node /tmp/test_profile.mjs)",
+      "Bash(node /tmp/test_itemlist.mjs)",
+      "Bash(node /tmp/test_itemlist2.mjs)"
     ],
     "additionalDirectories": [
       "/Users/nosel/photomaster-academy/src/app/api/posts/[postId]",
