@@ -59,7 +59,8 @@ Be constructive, specific, and educational. Reference photography concepts (rule
     }
     return NextResponse.json(parsed);
   } catch (err) {
-    console.error("[Critique]", err);
-    return NextResponse.json({ error: "AI analysis failed" }, { status: 500 });
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[Critique]", message);
+    return NextResponse.json({ error: `AI analysis failed: ${message}` }, { status: 500 });
   }
 }
