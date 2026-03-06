@@ -197,27 +197,25 @@ export function ChatPanel({ isDesktop, onClose, currentUserId, userName, userIma
                   )}
                 </div>
                 <div className={`max-w-[80%] ${isMe ? "items-end" : "items-start"}`}>
-                  {!isMe && (
-                    <div className="flex items-center gap-1.5 mb-0.5 px-1 flex-wrap">
-                      <span className="text-[10px] text-[var(--text-secondary)]">{msg.user_name}</span>
-                      {role && role !== "guest" && ROLE_BADGE_COLORS[role] && (
-                        <span className={`px-1.5 py-px rounded text-[8px] font-bold ${ROLE_BADGE_COLORS[role]}`}>
-                          {ROLE_LABELS[role]}
-                        </span>
-                      )}
-                      {profile?.birth_year && (
-                        <span className="text-[8px] text-[var(--text-secondary)] opacity-50">{profile.birth_year}</span>
-                      )}
-                    </div>
-                  )}
-                  <div className={`px-3.5 py-2 rounded-2xl text-sm leading-relaxed break-words ${
+                  <div className={`flex items-center gap-1.5 mb-0.5 px-1 flex-wrap ${isMe ? "justify-end" : ""}`}>
+                    <span className="text-[10px] text-[var(--text-secondary)]">{msg.user_name}</span>
+                    {role && role !== "guest" && ROLE_BADGE_COLORS[role] && (
+                      <span className={`px-1.5 py-px rounded text-[8px] font-bold ${ROLE_BADGE_COLORS[role]}`}>
+                        {ROLE_LABELS[role]}
+                      </span>
+                    )}
+                    {profile?.birth_year && (
+                      <span className="text-[8px] text-[var(--text-secondary)] opacity-50">{profile.birth_year}</span>
+                    )}
+                  </div>
+                  <div className={`w-fit max-w-full px-3.5 py-2 rounded-2xl text-sm leading-relaxed break-words ${
                     isMe
-                      ? "bg-gradient-to-r from-amber-500 to-orange-500 text-black rounded-br-md"
+                      ? "bg-gradient-to-r from-amber-500 to-orange-500 text-black rounded-br-md ml-auto"
                       : "bg-white/[0.06] text-[var(--text-primary)] rounded-bl-md"
                   }`}>
                     {msg.message}
                   </div>
-                  {!isMe && role === "photo" && (hasBodies || hasLenses) && (
+                  {role === "photo" && (hasBodies || hasLenses) && (
                     <div className="px-1 mt-0.5 flex flex-wrap gap-1">
                       {hasBodies && profile.camera_bodies.filter(Boolean).map((b, i) => (
                         <span key={`b${i}`} className="text-[8px] px-1.5 py-px rounded bg-blue-500/10 text-blue-400">{b}</span>

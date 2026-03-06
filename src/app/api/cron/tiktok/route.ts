@@ -37,7 +37,7 @@ async function refreshAccessToken(refreshToken: string): Promise<{ access_token:
 
 async function fetchUserInfo(accessToken: string) {
   const res = await fetch(
-    "https://open.tiktokapis.com/v2/user/info/?fields=open_id,avatar_url,display_name,follower_count,following_count,likes_count,video_count",
+    "https://open.tiktokapis.com/v2/user/info/?fields=open_id,username,avatar_url,display_name,follower_count,following_count,likes_count,video_count",
     { headers: { Authorization: `Bearer ${accessToken}` } }
   );
   const data = await res.json();
@@ -48,7 +48,7 @@ async function fetchVideos(accessToken: string) {
   const allVideos: Array<{
     id: string;
     title: string;
-    description: string;
+    video_description: string;
     cover_image_url: string;
     share_url: string;
     view_count: number;
@@ -204,8 +204,8 @@ export async function GET(req: NextRequest) {
         const rows = videos.map((v) => ({
           video_id: v.id,
           tiktok_username: member.tiktok_username,
-          title: v.title || v.description || "",
-          description: v.description || "",
+          title: v.title || v.video_description || "",
+          description: v.video_description || "",
           thumbnail_url: v.cover_image_url || "",
           cover_url: v.cover_image_url || "",
           share_url: v.share_url || `https://www.tiktok.com/@${member.tiktok_username}/video/${v.id}`,
