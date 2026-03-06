@@ -35,6 +35,7 @@ export default function Home() {
   const [allVideos, setAllVideos] = useState<TikTokVideo[]>([]);
   const [videos, setVideos] = useState<TikTokVideo[]>([]);
   const [members, setMembers] = useState<TikTokMember[]>([]);
+  const [selectedMember, setSelectedMember] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
   const PAGE_SIZE = 1000;
   const loaderRef = useRef<HTMLDivElement>(null);
@@ -46,21 +47,29 @@ export default function Home() {
       .then((d) => {
         if (d.videos) {
           setAllVideos(d.videos);
-          setVideos(d.videos.slice(0, PAGE_SIZE));
-          setHasMore(d.videos.length > PAGE_SIZE);
         }
         if (d.members) setMembers(d.members);
       })
       .catch(() => {});
   }, []);
 
+  const filteredVideos = selectedMember
+    ? allVideos.filter((v) => v.tiktok_username === selectedMember)
+    : allVideos;
+
   const loadMore = useCallback(() => {
     setVideos((prev) => {
-      const next = allVideos.slice(0, prev.length + PAGE_SIZE);
-      setHasMore(next.length < allVideos.length);
+      const next = filteredVideos.slice(0, prev.length + PAGE_SIZE);
+      setHasMore(next.length < filteredVideos.length);
       return next;
     });
-  }, [allVideos]);
+  }, [filteredVideos]);
+
+  // Reset displayed videos when filter changes
+  useEffect(() => {
+    setVideos(filteredVideos.slice(0, PAGE_SIZE));
+    setHasMore(filteredVideos.length > PAGE_SIZE);
+  }, [selectedMember, allVideos]);
 
   useEffect(() => {
     if (!loaderRef.current || !hasMore) return;
@@ -92,12 +101,10 @@ export default function Home() {
             </div>
             <div className="flex-1 overflow-y-auto">
               {rankedMembers.map((m, i) => (
-                <a
+                <button
                   key={m.tiktok_username}
-                  href={`https://www.tiktok.com/@${m.tiktok_username}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.03] transition border-b border-white/[0.04] last:border-0"
+                  onClick={() => setSelectedMember(selectedMember === m.tiktok_username ? null : m.tiktok_username)}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.03] transition border-b border-white/[0.04] last:border-0 text-left ${selectedMember === m.tiktok_username ? "bg-pink-500/10 border-l-2 border-l-pink-500" : ""}`}
                 >
                   <div className="w-6 text-center shrink-0">
                     {i < 3 ? (
@@ -131,7 +138,7 @@ export default function Home() {
                       <div className="text-[var(--text-secondary)]">hearts</div>
                     </div>
                   </div>
-                </a>
+                </button>
               ))}
             </div>
           </div>
@@ -141,8 +148,24 @@ export default function Home() {
         <div className="flex-1 min-w-0 flex flex-col">
           <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.06] bg-[var(--bg-primary)] shrink-0">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="#ec4899"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.8a8.28 8.28 0 0 0 4.76 1.5v-3.4a4.85 4.85 0 0 1-1-.21z"/></svg>
-            <h2 className="font-bold text-sm">{t.posts.title}</h2>
-            <span className="text-xs text-[var(--text-secondary)]">({allVideos.length} videos)</span>
+            {selectedMember ? (
+              <>
+                <h2 className="font-bold text-sm">@{selectedMember}</h2>
+                <span className="text-xs text-[var(--text-secondary)]">({filteredVideos.length} videos)</span>
+                <button
+                  onClick={() => setSelectedMember(null)}
+                  className="ml-auto flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] text-pink-400 hover:bg-pink-500/10 transition border border-pink-500/20"
+                >
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  Tất cả
+                </button>
+              </>
+            ) : (
+              <>
+                <h2 className="font-bold text-sm">{t.posts.title}</h2>
+                <span className="text-xs text-[var(--text-secondary)]">({allVideos.length} videos)</span>
+              </>
+            )}
           </div>
           <div ref={scrollRef} className="flex-1 overflow-y-auto">
             {videos.length > 0 ? (
