@@ -62,7 +62,7 @@ async function fetchVideos(accessToken: string) {
     if (cursor) body.cursor = cursor;
 
     const res = await fetch(
-      "https://open.tiktokapis.com/v2/video/list/?fields=id,title,description,cover_image_url,share_url,view_count",
+      "https://open.tiktokapis.com/v2/video/list/?fields=id,title,video_description,cover_image_url,share_url,view_count",
       {
         method: "POST",
         headers: {

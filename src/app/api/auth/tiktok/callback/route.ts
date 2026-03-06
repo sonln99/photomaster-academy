@@ -36,7 +36,7 @@ async function fetchAndSaveVideos(
       if (cursor) body.cursor = cursor;
 
       const res = await fetch(
-        "https://open.tiktokapis.com/v2/video/list/?fields=id,title,description,cover_image_url,share_url,view_count",
+        "https://open.tiktokapis.com/v2/video/list/?fields=id,title,video_description,cover_image_url,share_url,view_count",
         {
           method: "POST",
           headers: {
@@ -53,8 +53,8 @@ async function fetchAndSaveVideos(
       for (const v of videos) {
         allVideos.push({
           video_id: v.id,
-          title: v.title || v.description || "",
-          description: v.description || "",
+          title: v.title || v.video_description || "",
+          description: v.video_description || "",
           thumbnail_url: v.cover_image_url || "",
           cover_url: v.cover_image_url || "",
           share_url: v.share_url || `https://www.tiktok.com/@${username}/video/${v.id}`,
@@ -129,7 +129,7 @@ export async function GET(req: NextRequest) {
 
     // Get user info (basic + profile + stats)
     const userRes = await fetch(
-      "https://open.tiktokapis.com/v2/user/info/?fields=open_id,avatar_url,display_name,bio_description,profile_deep_link,follower_count,following_count,likes_count,video_count",
+      "https://open.tiktokapis.com/v2/user/info/?fields=open_id,username,avatar_url,display_name,bio_description,profile_deep_link,follower_count,following_count,likes_count,video_count",
       { headers: { Authorization: `Bearer ${tokenData.access_token}` } }
     );
     const userData = await userRes.json();
@@ -144,26 +144,17 @@ export async function GET(req: NextRequest) {
     const displayName = user.display_name || openId;
     const avatarUrl = user.avatar_url || "";
 
-    // Extract username from profile deep link (may be a short URL that needs redirect)
-    let username = "";
-    const profileLink = user.profile_deep_link || "";
-    const directMatch = profileLink.match(/@([^/?]+)/);
-    if (directMatch) {
-      username = directMatch[1];
-    } else if (profileLink) {
-      // Follow short URL redirect to get real profile URL
-      try {
-        const redirectRes = await fetch(profileLink, { method: "HEAD", redirect: "follow" });
-        const finalUrl = redirectRes.url;
-        console.log("[TikTok] Resolved profile URL:", finalUrl);
-        const resolvedMatch = finalUrl.match(/@([^/?]+)/);
-        if (resolvedMatch) username = resolvedMatch[1];
-      } catch (e) {
-        console.error("[TikTok] Failed to resolve profile link:", e);
+    // Extract username: prefer API field, then profile deep link, then fallback
+    let username = user.username || "";
+    if (!username) {
+      const profileLink = user.profile_deep_link || "";
+      const directMatch = profileLink.match(/@([^/?]+)/);
+      if (directMatch) {
+        username = directMatch[1];
       }
     }
     if (!username) {
-      username = displayName.replace(/[^\w.]/g, "").toLowerCase() || openId;
+      username = openId;
     }
     console.log("[TikTok] Resolved username:", username);
 
