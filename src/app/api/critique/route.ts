@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import Groq from "groq-sdk";
 
 export async function POST(req: NextRequest) {
   if (!process.env.GROQ_API_KEY) {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
   }
-
-  const groq = new Groq({
-    apiKey: process.env.GROQ_API_KEY,
-    timeout: 60000,
-  });
 
   const formData = await req.formData();
   const file = formData.get("image") as File | null;
@@ -31,20 +25,26 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const result = await groq.chat.completions.create({
-      model: "llama-3.2-11b-vision-preview",
-      max_tokens: 2000,
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "image_url",
-              image_url: { url: `data:${mimeType};base64,${base64}` },
-            },
-            {
-              type: "text",
-              text: `You are a professional photography critic. Analyze this photo and return ONLY a JSON object (no other text) in Vietnamese:
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "llama-3.2-90b-vision-preview",
+        max_tokens: 2000,
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "image_url",
+                image_url: { url: `data:${mimeType};base64,${base64}` },
+              },
+              {
+                type: "text",
+                text: `You are a professional photography critic. Analyze this photo and return ONLY a JSON object (no other text) in Vietnamese:
 
 {
   "overall_score": <1-100>,
@@ -56,13 +56,21 @@ export async function POST(req: NextRequest) {
   "summary": "<2-3 sentences>",
   "tips": ["<tip1>", "<tip2>", "<tip3>"]
 }`,
-            },
-          ],
-        },
-      ],
+              },
+            ],
+          },
+        ],
+      }),
     });
 
-    const text = result.choices[0]?.message?.content || "";
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      const errMsg = errData?.error?.message || res.statusText;
+      return NextResponse.json({ error: `Groq API error: ${errMsg}` }, { status: res.status });
+    }
+
+    const data = await res.json();
+    const text = data.choices?.[0]?.message?.content || "";
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
     if (!parsed) {
