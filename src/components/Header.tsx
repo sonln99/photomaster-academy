@@ -22,7 +22,7 @@ export default function Header() {
           </div>
           <div className="hidden sm:flex flex-col">
             <span className="font-bold text-sm tracking-tight leading-none">PhotoMaster</span>
-            <span className="text-[9px] text-[var(--text-secondary)] tracking-wider uppercase leading-none mt-0.5">Academy</span>
+            <span className="text-[9px] text-[var(--text-secondary)] tracking-wider uppercase leading-none mt-0.5">Academy <span className="text-[8px] opacity-50">v1.2.6</span></span>
           </div>
         </Link>
 
@@ -61,7 +61,7 @@ export default function Header() {
                 <span className="hidden sm:inline">{t.nav.login}</span>
               </button>
               <button
-                onClick={() => signIn("tiktok")}
+                onClick={() => window.location.href = "/api/auth/signin/tiktok"}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black text-white text-xs font-medium hover:bg-gray-900 transition shadow-sm border border-white/10"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
