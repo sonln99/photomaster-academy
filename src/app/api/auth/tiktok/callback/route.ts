@@ -66,7 +66,10 @@ async function fetchAndSaveVideos(
       cursor = data.data?.cursor;
     }
 
-    if (allVideos.length === 0) return;
+    if (allVideos.length === 0) {
+      console.log("[TikTok] No videos returned from API for", username);
+      return;
+    }
 
     await supabase.from("tiktok_videos").delete().eq("tiktok_username", username);
 
@@ -141,10 +144,28 @@ export async function GET(req: NextRequest) {
     const displayName = user.display_name || openId;
     const avatarUrl = user.avatar_url || "";
 
-    // Extract username from profile deep link
+    // Extract username from profile deep link (may be a short URL that needs redirect)
+    let username = "";
     const profileLink = user.profile_deep_link || "";
-    const usernameMatch = profileLink.match(/@([^/?]+)/);
-    const username = usernameMatch?.[1] || displayName.replace(/\s/g, "").toLowerCase() || openId;
+    const directMatch = profileLink.match(/@([^/?]+)/);
+    if (directMatch) {
+      username = directMatch[1];
+    } else if (profileLink) {
+      // Follow short URL redirect to get real profile URL
+      try {
+        const redirectRes = await fetch(profileLink, { method: "HEAD", redirect: "follow" });
+        const finalUrl = redirectRes.url;
+        console.log("[TikTok] Resolved profile URL:", finalUrl);
+        const resolvedMatch = finalUrl.match(/@([^/?]+)/);
+        if (resolvedMatch) username = resolvedMatch[1];
+      } catch (e) {
+        console.error("[TikTok] Failed to resolve profile link:", e);
+      }
+    }
+    if (!username) {
+      username = displayName.replace(/[^\w.]/g, "").toLowerCase() || openId;
+    }
+    console.log("[TikTok] Resolved username:", username);
 
     // Delete old records that match this user (by open_id or display_name) but have a different username
     const { data: oldRecords } = await supabase
