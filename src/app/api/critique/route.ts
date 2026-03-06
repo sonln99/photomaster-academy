@@ -6,7 +6,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
   }
 
-  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+  const groq = new Groq({
+    apiKey: process.env.GROQ_API_KEY,
+    timeout: 60000,
+  });
 
   const formData = await req.formData();
   const file = formData.get("image") as File | null;
@@ -15,8 +18,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No image provided" }, { status: 400 });
   }
 
-  if (file.size > 10 * 1024 * 1024) {
-    return NextResponse.json({ error: "Image too large (max 10MB)" }, { status: 400 });
+  if (file.size > 4 * 1024 * 1024) {
+    return NextResponse.json({ error: "Image too large (max 4MB)" }, { status: 400 });
   }
 
   const buffer = await file.arrayBuffer();
@@ -29,7 +32,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const result = await groq.chat.completions.create({
-      model: "llama-3.2-90b-vision-preview",
+      model: "llama-3.2-11b-vision-preview",
       max_tokens: 2000,
       messages: [
         {
@@ -41,20 +44,18 @@ export async function POST(req: NextRequest) {
             },
             {
               type: "text",
-              text: `You are a professional photography critic and instructor. Analyze this photo and provide a detailed critique in Vietnamese. Return your response as a JSON object with this exact structure:
+              text: `You are a professional photography critic. Analyze this photo and return ONLY a JSON object (no other text) in Vietnamese:
 
 {
-  "overall_score": <number 1-100>,
-  "composition": { "score": <number 1-100>, "feedback": "<string>" },
-  "lighting": { "score": <number 1-100>, "feedback": "<string>" },
-  "color": { "score": <number 1-100>, "feedback": "<string>" },
-  "focus_sharpness": { "score": <number 1-100>, "feedback": "<string>" },
-  "creativity": { "score": <number 1-100>, "feedback": "<string>" },
-  "summary": "<string: tổng kết ngắn gọn 2-3 câu>",
-  "tips": ["<string: gợi ý cải thiện 1>", "<string: gợi ý 2>", "<string: gợi ý 3>"]
-}
-
-Be constructive, specific, and educational. Reference photography concepts (rule of thirds, golden ratio, leading lines, color theory, etc.) where applicable. Return ONLY the JSON, no extra text.`,
+  "overall_score": <1-100>,
+  "composition": { "score": <1-100>, "feedback": "<string>" },
+  "lighting": { "score": <1-100>, "feedback": "<string>" },
+  "color": { "score": <1-100>, "feedback": "<string>" },
+  "focus_sharpness": { "score": <1-100>, "feedback": "<string>" },
+  "creativity": { "score": <1-100>, "feedback": "<string>" },
+  "summary": "<2-3 sentences>",
+  "tips": ["<tip1>", "<tip2>", "<tip3>"]
+}`,
             },
           ],
         },
