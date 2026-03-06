@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function POST(req: NextRequest) {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!process.env.GEMINI_API_KEY) {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
   }
+
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   const formData = await req.formData();
   const file = formData.get("image") as File | null;
@@ -22,25 +23,18 @@ export async function POST(req: NextRequest) {
   const buffer = await file.arrayBuffer();
   const base64 = Buffer.from(buffer).toString("base64");
 
-  const mediaType = file.type as "image/jpeg" | "image/png" | "image/gif" | "image/webp";
-  if (!["image/jpeg", "image/png", "image/gif", "image/webp"].includes(mediaType)) {
+  const mimeType = file.type;
+  if (!["image/jpeg", "image/png", "image/gif", "image/webp"].includes(mimeType)) {
     return NextResponse.json({ error: "Unsupported image format" }, { status: 400 });
   }
 
-  const message = await client.messages.create({
-    model: "claude-sonnet-4-20250514",
-    max_tokens: 2000,
-    messages: [
+  try {
+    const result = await model.generateContent([
       {
-        role: "user",
-        content: [
-          {
-            type: "image",
-            source: { type: "base64", media_type: mediaType, data: base64 },
-          },
-          {
-            type: "text",
-            text: `You are a professional photography critic and instructor. Analyze this photo and provide a detailed critique in Vietnamese. Return your response as a JSON object with this exact structure:
+        inlineData: { mimeType, data: base64 },
+      },
+      {
+        text: `You are a professional photography critic and instructor. Analyze this photo and provide a detailed critique in Vietnamese. Return your response as a JSON object with this exact structure:
 
 {
   "overall_score": <number 1-100>,
@@ -54,22 +48,18 @@ export async function POST(req: NextRequest) {
 }
 
 Be constructive, specific, and educational. Reference photography concepts (rule of thirds, golden ratio, leading lines, color theory, etc.) where applicable. Return ONLY the JSON, no extra text.`,
-          },
-        ],
       },
-    ],
-  });
+    ]);
 
-  const text = message.content[0].type === "text" ? message.content[0].text : "";
-
-  try {
+    const text = result.response.text();
     const jsonMatch = text.match(/\{[\s\S]*\}/);
-    const result = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
-    if (!result) {
+    const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+    if (!parsed) {
       return NextResponse.json({ error: "Failed to parse AI response" }, { status: 500 });
     }
-    return NextResponse.json(result);
-  } catch {
-    return NextResponse.json({ error: "Failed to parse AI response", raw: text }, { status: 500 });
+    return NextResponse.json(parsed);
+  } catch (err) {
+    console.error("[Critique]", err);
+    return NextResponse.json({ error: "AI analysis failed" }, { status: 500 });
   }
 }
