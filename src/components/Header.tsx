@@ -36,7 +36,7 @@ export default function Header() {
           </button>
 
           {user ? (
-            <Link href="/profile" className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-white/[0.04] transition">
+            <Link href="/profile" className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-white/[0.04] transition xl:hidden">
               {user?.image ? (
                 <img src={user.image} alt="" className="w-7 h-7 rounded-full ring-2 ring-white/10" />
               ) : (
@@ -44,7 +44,7 @@ export default function Header() {
                   {user?.name?.charAt(0) || "U"}
                 </div>
               )}
-              <span className="text-xs font-medium hidden sm:block">{user?.name}</span>
+              <span className="text-xs font-medium hidden sm:block xl:hidden">{user?.name}</span>
             </Link>
           ) : (
             <div className="flex items-center gap-1.5">
@@ -97,6 +97,7 @@ export default function Header() {
             { href: "/leaderboard", label: t.leaderboard.title, icon: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" },
             { href: "/community", label: t.nav.community, icon: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" },
             { href: "/news", label: t.nav.news, icon: "M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" },
+            { href: "/trends", label: t.trends.title, icon: "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" },
           ].map((link) => (
             <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)}
               className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/[0.04] transition">

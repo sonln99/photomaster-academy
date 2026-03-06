@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { setUserId, loadProgressFromCloud, uploadProgressToCloud } from "@/lib/progress";
+import { setUserId, loadProgressFromCloud, uploadProgressToCloud, getCourseProgress } from "@/lib/progress";
+import { useCourses } from "@/hooks/useCourses";
 import { ChatPanel } from "@/components/ChatWidget";
 import { useLanguage } from "@/lib/LanguageContext";
 import { useAuth, AuthProvider as SupabaseAuthProvider } from "@/lib/auth";
@@ -41,22 +42,118 @@ interface LeaderboardUser {
   total_lessons_completed: number;
 }
 
+interface UserProfile {
+  role: string;
+  camera_bodies: string[];
+  lenses: string[];
+  birth_year: number | null;
+}
+
+const ROLE_BADGE_COLORS: Record<string, string> = {
+  master: "bg-yellow-400 text-yellow-900",
+  admin: "bg-red-400 text-red-900",
+  photo: "bg-blue-400 text-blue-900",
+  makeup: "bg-pink-400 text-pink-900",
+  model: "bg-purple-400 text-purple-900",
+};
+const ROLE_LABELS_RIGHT: Record<string, string> = {
+  master: "Master", admin: "Admin", photo: "Photographer", makeup: "Makeup", model: "Model",
+};
+
+function ProgressRadar() {
+  const { courses } = useCourses();
+  const [progress, setProgress] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (courses.length === 0) return;
+    setProgress(courses.map((c) => getCourseProgress(c.id, c.lessons.length)));
+  }, [courses]);
+
+  if (courses.length === 0 || progress.length === 0) return null;
+
+  const size = 200;
+  const cx = size / 2;
+  const cy = size / 2;
+  const r = 70;
+  const n = courses.length;
+
+  const getPoint = (i: number, value: number) => {
+    const angle = (Math.PI * 2 * i) / n - Math.PI / 2;
+    const dist = (value / 100) * r;
+    return { x: cx + dist * Math.cos(angle), y: cy + dist * Math.sin(angle) };
+  };
+
+  const gridLevels = [25, 50, 75, 100];
+
+  return (
+    <Link href="/history" className="block mb-3 px-1">
+      <div className="rounded-xl bg-white/[0.02] border border-white/[0.04] p-2 hover:bg-white/[0.04] transition cursor-pointer">
+        <div className="flex items-center justify-center">
+          <svg className="w-full" viewBox={`0 0 ${size} ${size}`}>
+            {gridLevels.map((level) => (
+              <polygon
+                key={level}
+                points={Array.from({ length: n }, (_, i) => {
+                  const p = getPoint(i, level);
+                  return `${p.x},${p.y}`;
+                }).join(" ")}
+                fill="none"
+                stroke="rgba(255,255,255,0.06)"
+                strokeWidth="0.5"
+              />
+            ))}
+            {Array.from({ length: n }, (_, i) => {
+              const p = getPoint(i, 100);
+              return <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />;
+            })}
+            <polygon
+              points={progress.map((v, i) => {
+                const p = getPoint(i, Math.max(v, 2));
+                return `${p.x},${p.y}`;
+              }).join(" ")}
+              fill="rgba(251,191,36,0.15)"
+              stroke="rgba(251,191,36,0.8)"
+              strokeWidth="1.5"
+            />
+            {progress.map((v, i) => {
+              const p = getPoint(i, Math.max(v, 2));
+              return <circle key={i} cx={p.x} cy={p.y} r="2.5" fill={courses[i]?.color || "#f59e0b"} />;
+            })}
+            {courses.map((c, i) => {
+              const p = getPoint(i, 120);
+              return (
+                <text key={i} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle" fill={c.color} fontSize="8" fontWeight="600">
+                  {progress[i]}%
+                </text>
+              );
+            })}
+          </svg>
+        </div>
+        <div className="flex justify-center gap-3 mt-1">
+          {courses.map((c) => (
+            <div key={c.id} className="flex items-center gap-1">
+              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: c.color }} />
+              <span className="text-[8px] text-[var(--text-secondary)]">{c.title.split(" ")[0]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 function LeftSidebar() {
   const { user, signOut } = useAuth();
   const { t } = useLanguage();
-  const [userRole, setUserRole] = useState<string | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user?.id) { setProfile(null); return; }
     fetch(`/api/profile?userId=${user.id}`)
       .then((r) => r.json())
-      .then((d) => { if (d?.role) setUserRole(d.role); })
+      .then((d) => { if (d?.user_id) setProfile(d); })
       .catch(() => {});
   }, [user?.id]);
-
-  const ROLE_LABELS: Record<string, string> = {
-    master: "Master", admin: "Admin", photo: "Photographer", makeup: "Makeup", model: "Model", guest: "Guest",
-  };
 
   const navItems = [
     { href: "/", icon: "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z", label: t.nav.home },
@@ -68,6 +165,7 @@ function LeftSidebar() {
     { href: "/leaderboard", icon: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z", label: t.leaderboard.title },
     { href: "/community", icon: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75", label: t.nav.community },
     { href: "/news", icon: "M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2", label: t.nav.news },
+    { href: "/trends", icon: "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6", label: t.trends.title },
   ];
 
   const [expandedNav, setExpandedNav] = useState<string | null>(null);
@@ -85,23 +183,49 @@ function LeftSidebar() {
                 {user.name?.charAt(0) || "U"}
               </div>
             )}
-            <div className="min-w-0">
+            <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold truncate">{user.name}</p>
-              {userRole && userRole !== "guest" && (
-                <span className="text-[10px] text-amber-400 font-medium">{ROLE_LABELS[userRole] || userRole}</span>
+              {profile?.role && profile.role !== "guest" && ROLE_BADGE_COLORS[profile.role] && (
+                <span className={`inline-block px-1.5 py-px rounded text-[8px] font-bold mt-0.5 ${ROLE_BADGE_COLORS[profile.role]}`}>
+                  {ROLE_LABELS_RIGHT[profile.role]}
+                </span>
               )}
             </div>
-          </div>
-          <div className="flex gap-1.5">
-            <Link href="/profile" className="flex-1 text-center px-2 py-1.5 rounded-lg text-[10px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/[0.04] border border-[var(--border)] transition">
-              {t.nav.profile}
-            </Link>
-            <Link href="/history" className="flex-1 text-center px-2 py-1.5 rounded-lg text-[10px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/[0.04] border border-[var(--border)] transition">
-              {t.nav.history}
+            <Link href="/profile" className="p-1.5 rounded-lg hover:bg-white/[0.06] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition" title="Edit profile">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
             </Link>
           </div>
+          {profile && (
+            <div className="space-y-1.5">
+              {profile.birth_year && (
+                <div className="flex items-center gap-2 text-[10px] text-[var(--text-secondary)]">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  {profile.birth_year}
+                </div>
+              )}
+              {profile.camera_bodies?.filter(Boolean).length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {profile.camera_bodies.filter(Boolean).map((b, i) => (
+                    <span key={`b${i}`} className="text-[9px] px-1.5 py-px rounded bg-blue-500/10 text-blue-400">{b}</span>
+                  ))}
+                </div>
+              )}
+              {profile.lenses?.filter(Boolean).length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {profile.lenses.filter(Boolean).map((l, i) => (
+                    <span key={`l${i}`} className="text-[9px] px-1.5 py-px rounded bg-cyan-500/10 text-cyan-400">{l}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       ) : null}
+
+      {/* Learning Progress Radar */}
+      {user && <ProgressRadar />}
 
       {/* Nav menu */}
       <nav className="space-y-0.5 flex-1">
